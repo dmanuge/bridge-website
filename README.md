@@ -12,17 +12,7 @@ python3 -m http.server 8080
 
 and open http://localhost:8080/.
 
-To flip between the two full builds (V9 Funded Object vs V10 Two Doors), open `compare.html` and use the A/B header toggle (keys: A, B, or arrows).
-
-`compare-standalone.html` is the same A/B comparison in a single self-contained file (both candidates, fonts, photography and logo inlined) for sharing outside the repo, e.g. by email or upload.
-
-There are three copies of the comparison, all showing the same two candidates:
-
-| File | What it is |
-| --- | --- |
-| `compare.html` | A/B toggle that loads V9 and V10 as iframes. Needs a local server; always reflects the current concept files. |
-| `compare-standalone.html` | The same comparison inlined into one portable HTML document. No server, no `assets/` folder. |
-| `compare-candidates.html` | The exact file published as the shared Claude artifact: https://claude.ai/code/artifact/cee43507-cde0-47c7-b35e-237a61523e02 |
+To flip between the two full builds (V9 Funded Object vs V10 Two Doors), open `compare.html` and use the A/B header toggle (keys: A, B, or arrows). It loads the concept files as iframes, so it always reflects the current sources (needs a local server).
 
 The two pages being compared are `concepts/v9-funded-object-full.html` (Funded Object) and
 `concepts/v10-two-doors-full.html` (Two Doors). They are generated from one shared below-hero
