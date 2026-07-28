@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bridge — Funded Object Stack</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300..800&family=Newsreader:ital,opsz,wght@0,6..72,200..500;1,6..72,300&display=swap" rel="stylesheet">
+<style>
+:root { --bridge-blue: #005FF1; --bridge-navy: #001A2C; --bridge-green: #00FDA4; --paper: #FFFFFF; --bg-standard: #F4F2F0; --gray-50: #F7F5F3; --gray-100: #EDEAE6; --gray-200: #DDD8D2; --gray-300: #C4BEB6; --gray-400: #9A958D; --gray-500: #6B7682; --gray-600: #4A555F; --gray-700: #37424C; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg-standard); font-family: 'DM Sans', sans-serif; color: var(--bridge-navy); }
+a { color: var(--bridge-blue); } a:hover { color: #0049C2; }
+.page { width: 100%; max-width: 1280px; margin: 0 auto; background: var(--paper); box-shadow: 0 0 0 1px rgba(0,26,44,0.06); }
+@keyframes win-fade6 { 0% { opacity: 1; visibility: visible; } 13% { opacity: 1; visibility: visible; } 16.7% { opacity: 0; visibility: hidden; } 96% { opacity: 0; visibility: hidden; } 100% { opacity: 1; visibility: visible; } }
+@media (prefers-reduced-motion: reduce) {
+  .win-fade { animation: none !important; opacity: 0 !important; visibility: hidden !important; }
+  .win-first { opacity: 1 !important; visibility: visible !important; }
+}
+.partners {
+  background: #F4F2F0;
+  padding: 22px 56px;
+  border-bottom: 1px solid var(--gray-100);
+}
+.partners-inner {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.partners-copy {
+  flex: 0 0 200px;
+  font-size: 11px;
+  line-height: 1.45;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: #2a343c;
+}
+.partners-logos {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  min-width: 0;
+}
+.partners-logos img {
+  display: block;
+  height: 28px;
+  width: auto;
+  max-width: 110px;
+  object-fit: contain;
+}
+.partners-logos img.tall { height: 34px; }
+.partners-logos img.wide { height: 22px; max-width: 130px; }
+/* Prefer the attached strip for exact brand lockup when available */
+.partners-strip {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  object-position: center;
+}
+.opt {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1.5px solid var(--gray-300);
+  background: var(--paper);
+  border-radius: 999px;
+  padding: 12px 18px;
+  cursor: pointer;
+}
+.opt.on {
+  border-color: var(--bridge-blue);
+  background: #EDF3FE;
+}
+@media (max-width: 900px) {
+  .partners-inner { flex-direction: column; align-items: flex-start; gap: 18px; }
+  .partners-copy { flex: none; }
+  .partners-logos { flex-wrap: wrap; justify-content: flex-start; }
+}
+
+.hiw {
+  background: linear-gradient(180deg, #F4F2F0 0%, #FFFFFF 100%);
+  padding: 56px 56px 48px;
+  border-bottom: 1px solid var(--gray-100);
+  text-align: center;
+}
+.hiw h2 {
+  margin: 0;
+  font-family: 'Newsreader', Georgia, serif;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  font-size: clamp(36px, 4vw, 52px);
+  line-height: 1.08;
+  color: var(--bridge-navy);
+}
+.hiw h2 .accent { color: var(--bridge-blue); font-weight: 500; }
+.hiw .lede {
+  margin: 18px auto 0;
+  max-width: 680px;
+  font-size: 16.5px;
+  line-height: 1.6;
+  color: var(--gray-600);
+}
+.hiw-video {
+  margin: 36px auto 0;
+  max-width: 960px;
+}
+.hiw-trigger {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 1px solid var(--gray-200);
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--bridge-navy);
+  cursor: pointer;
+  box-shadow: 0 12px 40px rgba(0,26,44,0.12);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.hiw-trigger:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 48px rgba(0,26,44,0.16);
+}
+.hiw-trigger-media {
+  display: block;
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: #001018;
+}
+.hiw-trigger-media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.hiw-trigger-shade {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 20, 40, 0.22);
+}
+.hiw-play {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hiw-play svg {
+  width: 64px;
+  height: 64px;
+  color: #fff;
+  filter: drop-shadow(0 8px 24px rgba(0,0,0,0.35));
+}
+.hiw-cta {
+  margin-top: 28px;
+}
+.hiw-cta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bridge-blue);
+  color: var(--paper);
+  font-size: 15px;
+  font-weight: 600;
+  padding: 14px 26px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.hiw-modal {
+  border: 0;
+  padding: 0;
+  max-width: min(960px, calc(100vw - 32px));
+  width: 100%;
+  background: transparent;
+}
+.hiw-modal::backdrop {
+  background: rgba(0, 20, 40, 0.82);
+  backdrop-filter: blur(4px);
+}
+.hiw-modal-inner {
+  background: #001018;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.35);
+}
+.hiw-modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.hiw-modal-head h3 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 500;
+  color: #fff;
+  font-family: 'DM Sans', sans-serif;
+}
+.hiw-modal-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  cursor: pointer;
+}
+.hiw-modal-close:hover { background: rgba(255,255,255,0.18); }
+.hiw-modal video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000;
+}
+@media (max-width: 900px) {
+  .hiw { padding: 40px 24px 36px; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ===== V1 Funded Object hero ===== -->
+  <section aria-label="Funded Object">
+    <div style="position: relative; height: 700px; overflow: hidden; background: var(--bridge-navy)">
+      <div style="position: absolute; inset: 0; z-index: 1">
+            <div class="win-fade win-first" style="position: absolute; inset: 0; overflow: hidden; animation: win-fade6 36s ease-in-out infinite; animation-delay: 0s">
+              <img src="../assets/images/wins/hampton-refi.png" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover">
+              <div style="position: absolute; inset: 0; background: linear-gradient(0deg, rgba(0,26,44,0.88) 0%, rgba(0,26,44,0.5) 26%, rgba(0,26,44,0) 52%); pointer-events: none"></div>
+              <div style="position: absolute; right: 56px; bottom: 52px; max-width: 400px; pointer-events: none">
+                <div style="font-size: 12.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--bridge-green); font-weight: 700; margin-bottom: 10px; text-shadow: 0 1px 8px rgba(0,26,44,0.6)">Recently funded · Hotel refinance</div>
+                <div style="font-family: 'Newsreader', Georgia, serif; font-weight: 300; font-size: 48px; line-height: 1; letter-spacing: -0.01em; color: var(--paper); font-variant-numeric: tabular-nums; margin-bottom: 10px; text-shadow: 0 2px 14px rgba(0,26,44,0.55)">$18,500,000</div>
+                <div style="font-size: 15.5px; font-weight: 500; color: rgba(255,255,255,0.97); line-height: 1.5; text-shadow: 0 1px 8px rgba(0,26,44,0.5)">CMBS refinance with cash-out · <span style="color: var(--paper); font-weight: 600">Financing Secured by Bridge</span></div><div style="margin-top: 12px"><span style="font-size: 12px; font-weight: 600; color: var(--paper); border: 1px solid rgba(255,255,255,0.65); background: rgba(0,26,44,0.35); border-radius: 999px; padding: 5px 12px">Closed in 35 days</span></div>
+              </div>
+            </div>
+            <div class="win-fade" style="position: absolute; inset: 0; overflow: hidden; animation: win-fade6 36s ease-in-out infinite; animation-delay: -6s">
+              <img src="../assets/images/wins/dog-sauce.png" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover">
+              <div style="position: absolute; inset: 0; background: linear-gradient(0deg, rgba(0,26,44,0.88) 0%, rgba(0,26,44,0.5) 26%, rgba(0,26,44,0) 52%); pointer-events: none"></div>
+              <div style="position: absolute; right: 56px; bottom: 52px; max-width: 400px; pointer-events: none">
+                <div style="font-size: 12.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--bridge-green); font-weight: 700; margin-bottom: 10px; text-shadow: 0 1px 8px rgba(0,26,44,0.6)">Recently funded · Consumer brand in retail</div>
+                <div style="font-family: 'Newsreader', Georgia, serif; font-weight: 300; font-size: 48px; line-height: 1; letter-spacing: -0.01em; color: var(--paper); font-variant-numeric: tabular-nums; margin-bottom: 10px; text-shadow: 0 2px 14px rgba(0,26,44,0.55)">3,000 Walmart doors</div>
+                <div style="font-size: 15.5px; font-weight: 500; color: rgba(255,255,255,0.97); line-height: 1.5; text-shadow: 0 1px 8px rgba(0,26,44,0.5)">New SKU launch, production financing · <span style="color: var(--paper); font-weight: 600">Bridge Direct Lending</span></div>
+              </div>
+            </div>
+            <div class="win-fade" style="position: absolute; inset: 0; overflow: hidden; animation: win-fade6 36s ease-in-out infinite; animation-delay: -12s">
+              <img src="../assets/images/wins/comfort-suites.png" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover">
+              <div style="position: absolute; inset: 0; background: linear-gradient(0deg, rgba(0,26,44,0.88) 0%, rgba(0,26,44,0.5) 26%, rgba(0,26,44,0) 52%); pointer-events: none"></div>
+              <div style="position: absolute; right: 56px; bottom: 52px; max-width: 400px; pointer-events: none">
+                <div style="font-size: 12.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--bridge-green); font-weight: 700; margin-bottom: 10px; text-shadow: 0 1px 8px rgba(0,26,44,0.6)">Recently funded · Hotel acquisition</div>
+                <div style="font-family: 'Newsreader', Georgia, serif; font-weight: 300; font-size: 48px; line-height: 1; letter-spacing: -0.01em; color: var(--paper); font-variant-numeric: tabular-nums; margin-bottom: 10px; text-shadow: 0 2px 14px rgba(0,26,44,0.55)">$5,300,000</div>
+                <div style="font-size: 15.5px; font-weight: 500; color: rgba(255,255,255,0.97); line-height: 1.5; text-shadow: 0 1px 8px rgba(0,26,44,0.5)">Comfort Suites acquisition · <span style="color: var(--paper); font-weight: 600">Financing Secured by Bridge</span></div><div style="margin-top: 12px"><span style="font-size: 12px; font-weight: 600; color: var(--paper); border: 1px solid rgba(255,255,255,0.65); background: rgba(0,26,44,0.35); border-radius: 999px; padding: 5px 12px">88 keys</span></div>
+              </div>
+            </div>
+            <div class="win-fade" style="position: absolute; inset: 0; overflow: hidden; animation: win-fade6 36s ease-in-out infinite; animation-delay: -18s">
+              <img src="../assets/images/wins/ice-cream.png" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover">
+              <div style="position: absolute; inset: 0; background: linear-gradient(0deg, rgba(0,26,44,0.88) 0%, rgba(0,26,44,0.5) 26%, rgba(0,26,44,0) 52%); pointer-events: none"></div>
+              <div style="position: absolute; right: 56px; bottom: 52px; max-width: 400px; pointer-events: none">
+                <div style="font-size: 12.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--bridge-green); font-weight: 700; margin-bottom: 10px; text-shadow: 0 1px 8px rgba(0,26,44,0.6)">Recently funded · Walmart supplier</div>
+                <div style="font-family: 'Newsreader', Georgia, serif; font-weight: 300; font-size: 48px; line-height: 1; letter-spacing: -0.01em; color: var(--paper); font-variant-numeric: tabular-nums; margin-bottom: 10px; text-shadow: 0 2px 14px rgba(0,26,44,0.55)">$500,000</div>
+                <div style="font-size: 15.5px; font-weight: 500; color: rgba(255,255,255,0.97); line-height: 1.5; text-shadow: 0 1px 8px rgba(0,26,44,0.5)">Production financing for a Walmart order · <span style="color: var(--paper); font-weight: 600">Bridge Direct Lending</span></div>
+              </div>
+            </div>
+            <div class="win-fade" style="position: absolute; inset: 0; overflow: hidden; animation: win-fade6 36s ease-in-out infinite; animation-delay: -24s">
+              <img src="../assets/images/wins/groundbreaking.png" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover">
+              <div style="position: absolute; inset: 0; background: linear-gradient(0deg, rgba(0,26,44,0.88) 0%, rgba(0,26,44,0.5) 26%, rgba(0,26,44,0) 52%); pointer-events: none"></div>
+              <div style="position: absolute; right: 56px; bottom: 52px; max-width: 400px; pointer-events: none">
+                <div style="font-size: 12.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--bridge-green); font-weight: 700; margin-bottom: 10px; text-shadow: 0 1px 8px rgba(0,26,44,0.6)">Recently funded · Hotel new construction</div>
+                <div style="font-family: 'Newsreader', Georgia, serif; font-weight: 300; font-size: 48px; line-height: 1; letter-spacing: -0.01em; color: var(--paper); font-variant-numeric: tabular-nums; margin-bottom: 10px; text-shadow: 0 2px 14px rgba(0,26,44,0.55)">Tru by Hilton</div>
+                <div style="font-size: 15.5px; font-weight: 500; color: rgba(255,255,255,0.97); line-height: 1.5; text-shadow: 0 1px 8px rgba(0,26,44,0.5)">Senior construction loan · <span style="color: var(--paper); font-weight: 600">Bridge Direct Lending</span></div><div style="margin-top: 12px"><span style="font-size: 12px; font-weight: 600; color: var(--paper); border: 1px solid rgba(255,255,255,0.65); background: rgba(0,26,44,0.35); border-radius: 999px; padding: 5px 12px">106 keys</span></div>
+              </div>
+            </div>
+            <div class="win-fade" style="position: absolute; inset: 0; overflow: hidden; animation: win-fade6 36s ease-in-out infinite; animation-delay: -30s">
+              <img src="../assets/images/wins/ups-store.png" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover">
+              <div style="position: absolute; inset: 0; background: linear-gradient(0deg, rgba(0,26,44,0.88) 0%, rgba(0,26,44,0.5) 26%, rgba(0,26,44,0) 52%); pointer-events: none"></div>
+              <div style="position: absolute; right: 56px; bottom: 52px; max-width: 400px; pointer-events: none">
+                <div style="font-size: 12.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--bridge-green); font-weight: 700; margin-bottom: 10px; text-shadow: 0 1px 8px rgba(0,26,44,0.6)">Recently funded · Location purchase</div>
+                <div style="font-family: 'Newsreader', Georgia, serif; font-weight: 300; font-size: 48px; line-height: 1; letter-spacing: -0.01em; color: var(--paper); font-variant-numeric: tabular-nums; margin-bottom: 10px; text-shadow: 0 2px 14px rgba(0,26,44,0.55)">$750,000</div>
+                <div style="font-size: 15.5px; font-weight: 500; color: rgba(255,255,255,0.97); line-height: 1.5; text-shadow: 0 1px 8px rgba(0,26,44,0.5)">The UPS Store location purchase</div>
+              </div>
+            </div>
+      </div>
+      <div style="position: absolute; inset: 0; z-index: 2; background: linear-gradient(100deg, rgba(0,26,44,0.96) 0%, rgba(0,26,44,0.92) 38%, rgba(0,26,44,0.55) 52%, rgba(0,26,44,0.07) 67%, rgba(0,26,44,0.07) 100%); pointer-events: none"></div>
+      <div style="position: absolute; top: 0; left: 0; right: 0; height: 140px; z-index: 2; background: linear-gradient(180deg, rgba(0,26,44,0.82) 0%, rgba(0,26,44,0.42) 60%, rgba(0,26,44,0) 100%); pointer-events: none"></div>
+      <div style="position: relative; z-index: 3; box-sizing: border-box; height: 100%; display: flex; flex-direction: column; justify-content: space-between; padding: 28px 56px 56px; pointer-events: none">
+        <div style="display: flex; align-items: center; justify-content: space-between">
+          <img src="../assets/logos/bridge-logo-white.png" alt="Bridge" style="height: 20px; width: auto; display: block">
+          <div style="display: flex; align-items: center; gap: 30px">
+            <nav style="display: flex; gap: 26px; font-size: 13.5px; color: rgba(255,255,255,0.85); font-weight: 500">
+              <span>Hotel financing</span><span>Consumer brands</span><span>Successes</span><span>How Bridge works</span>
+            </nav>
+            <span style="pointer-events: auto; font-size: 13.5px; font-weight: 600; color: var(--paper); background: var(--bridge-blue); border-radius: 8px; padding: 9px 15px">Tell us what you're financing</span>
+          </div>
+        </div>
+        <div style="max-width: 520px">
+          <h1 style="margin: 0 0 22px; font-family: 'Newsreader', Georgia, serif; font-weight: 300; font-size: 72px; line-height: 1.0; letter-spacing: -0.025em; color: var(--paper)">Business capital for what's next.</h1>
+          <p style="margin: 0 0 36px; font-size: 19px; line-height: 1.55; color: rgba(255,255,255,0.82); max-width: 420px">We handle your capital needs so you can get back to business.</p>
+          <div style="display: flex; align-items: center; gap: 26px; pointer-events: auto">
+            <span style="display: inline-flex; align-items: center; gap: 10px; background: var(--paper); color: var(--bridge-navy); font-size: 15px; font-weight: 600; padding: 15px 24px; border-radius: 10px">Tell us what you're financing <span style="font-size: 17px">&rarr;</span></span>
+            <span style="font-size: 15px; font-weight: 600; color: var(--paper)">How it works &rarr;</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Real partner logos (from attached strip) ===== -->
+  <section class="partners" aria-label="Official financing partners">
+    <img class="partners-strip" src="../assets/images/partner-strip.png" alt="Official financing partner to the leading hospitality and retail brands — Wyndham, Lowe's, Choice Hotels, Walmart, Hilton, AAHOA">
+  </section>
+
+  <!-- ===== V7 Financing Concierge ===== -->
+  <section aria-label="Financing Concierge" style="background: var(--paper); border-bottom: 1px solid var(--gray-100)">
+    <div style="display: grid; grid-template-columns: 420px 1fr; gap: 52px; padding: 36px 56px 56px">
+      <div>
+        <h2 style="margin: 0 0 14px; font-family: 'Newsreader', Georgia, serif; font-weight: 400; letter-spacing: -0.015em; font-size: 48px; line-height: 1.05; color: var(--bridge-navy)">What are you financing?</h2>
+        <p style="margin: 0 0 26px; font-size: 15px; line-height: 1.55; color: var(--gray-600)">Tell us what you're working on and we'll show you how Bridge can help.</p>
+        <div id="options" style="display: flex; flex-direction: column; gap: 10px"></div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 18px">
+        <div style="font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray-500); font-weight: 600">Based on your selection</div>
+        <div style="width: 100%; height: 300px; border-radius: 12px; overflow: hidden; background: var(--gray-100)"><img id="p-img" src="" alt="" style="width: 100%; height: 100%; object-fit: cover; display: block"></div>
+        <div style="display: grid; grid-template-columns: 1fr 290px; gap: 26px; align-items: start">
+          <div style="display: flex; flex-direction: column; gap: 7px">
+            <div id="p-name" style="font-size: 15.5px; font-weight: 600; color: var(--bridge-navy)"></div>
+            <div id="p-amount" style="font-family: 'Newsreader', Georgia, serif; font-weight: 400; letter-spacing: -0.015em; font-size: 40px; line-height: 1; color: var(--bridge-navy); font-variant-numeric: tabular-nums"></div>
+            <div id="p-role" style="font-size: 11.5px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; color: var(--bridge-blue)"></div>
+            <div id="p-desc" style="font-size: 13.5px; line-height: 1.55; color: var(--gray-600); margin-top: 4px"></div>
+          </div>
+          <div style="background: var(--bg-standard); border-radius: 12px; padding: 18px 20px; display: flex; flex-direction: column; gap: 10px">
+            <div id="p-quote" style="font-size: 13.5px; line-height: 1.6; color: var(--gray-700)"></div>
+            <div id="p-attr" style="font-size: 12.5px; color: var(--gray-500)"></div>
+          </div>
+        </div>
+        <div><span style="display: inline-flex; align-items: center; gap: 10px; background: var(--bridge-blue); color: var(--paper); font-size: 14px; font-weight: 600; padding: 13px 26px; border-radius: 9px; cursor: pointer">Continue <span>&rarr;</span></span></div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ===== How It Works (video header, like bridge.co/how-it-works) ===== -->
+  <section class="hiw" aria-label="How financing works with Bridge">
+    <h2>How Production Financing<br>Works with <span class="accent">Bridge</span></h2>
+    <p class="lede">Bridge fronts up to 100% of production cost against a confirmed order and waits to be repaid until your retailer does. You keep the deal and the equity.</p>
+    <div class="hiw-video">
+      <button type="button" class="hiw-trigger" id="hiwOpen" aria-haspopup="dialog" aria-controls="hiwModal" aria-label="Watch the program overview, about 2 minutes">
+        <span class="hiw-trigger-media" aria-hidden="true">
+          <img src="../assets/video/about-the-program-poster.jpg" alt="" width="1280" height="720" loading="lazy">
+          <span class="hiw-trigger-shade"></span>
+          <span class="hiw-play">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+          </span>
+        </span>
+      </button>
+    </div>
+    <div class="hiw-cta">
+      <span>Request financing <span aria-hidden="true">&rarr;</span></span>
+    </div>
+  </section>
+
+  <dialog class="hiw-modal" id="hiwModal" aria-labelledby="hiwModalTitle">
+    <div class="hiw-modal-inner">
+      <div class="hiw-modal-head">
+        <h3 id="hiwModalTitle">About the Bridge program</h3>
+        <button type="button" class="hiw-modal-close" id="hiwClose" aria-label="Close video">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
+      <video
+        id="hiwPlayer"
+        controls
+        playsinline
+        preload="none"
+        poster="../assets/video/about-the-program-poster.jpg"
+        src="../assets/video/about-the-program.mp4"
+      >
+        Your browser does not support embedded video.
+      </video>
+    </div>
+  </dialog>
+
+  <!-- ===== V8 Customer Documentary ===== -->
+  <section aria-label="Customer Documentary" style="background: var(--bridge-navy)">
+    <div style="position: relative; height: 680px; overflow: hidden">
+      <img src="../assets/images/wins/dog-sauce.png" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 30%">
+      <div style="position: absolute; inset: 0; background: linear-gradient(95deg, rgba(0,26,44,0.96) 0%, rgba(0,26,44,0.88) 34%, rgba(0,26,44,0.35) 64%, rgba(0,26,44,0.2) 100%)"></div>
+      <div style="position: relative; box-sizing: border-box; height: 100%; display: flex; flex-direction: column; padding: 40px 56px 52px">
+        <div style="max-width: 520px; margin-top: auto">
+          <h2 style="margin: 0 0 20px; font-family: 'Newsreader', Georgia, serif; font-weight: 400; letter-spacing: -0.015em; font-size: 48px; line-height: 1.1; color: var(--paper)">&ldquo;We had the demand in place. Bridge gave us the capital to deliver.&rdquo;</h2>
+          <div style="font-size: 14.5px; font-weight: 600; color: var(--paper)">Mike Romano</div>
+          <div style="font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 24px">CEO, Field &amp; Future</div>
+          <div style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.7); font-weight: 700; margin-bottom: 8px">Inventory Financing</div>
+          <div style="font-family: 'Newsreader', Georgia, serif; font-weight: 400; letter-spacing: -0.015em; font-size: 44px; line-height: 1; color: var(--paper); font-variant-numeric: tabular-nums; margin-bottom: 8px">$6,500,000</div>
+          <div style="font-size: 11.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--bridge-green); font-weight: 700; margin-bottom: 28px">Bridge Direct Lending</div>
+          <span style="display: inline-flex; align-items: center; gap: 10px; background: var(--paper); color: var(--bridge-navy); font-size: 14px; font-weight: 600; padding: 13px 22px; border-radius: 9px">Read Mike's story <span>&rarr;</span></span>
+        </div>
+      </div>
+    </div>
+    <div style="background: var(--bridge-navy); padding: 36px 56px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; align-items: start; border-top: 1px solid rgba(255,255,255,0.08)">
+      <div style="display: flex; flex-direction: column; gap: 6px; align-items: center; text-align: center"><div style="font-family: 'Newsreader', Georgia, serif; font-weight: 400; letter-spacing: -0.015em; font-size: 30px; line-height: 1.1; color: var(--paper); font-variant-numeric: tabular-nums">Over $500M</div><div style="font-size: 12.5px; color: rgba(255,255,255,0.6); font-weight: 500">Capital closed in 2025</div></div>
+      <div style="display: flex; flex-direction: column; gap: 6px; align-items: center; text-align: center"><div style="font-family: 'Newsreader', Georgia, serif; font-weight: 400; letter-spacing: -0.015em; font-size: 30px; line-height: 1.1; color: var(--paper); font-variant-numeric: tabular-nums">$250K–$50M+</div><div style="font-size: 12.5px; color: rgba(255,255,255,0.6); font-weight: 500">Financing range</div></div>
+      <div style="display: flex; flex-direction: column; gap: 6px; align-items: center; text-align: center"><div style="font-family: 'Newsreader', Georgia, serif; font-weight: 400; letter-spacing: -0.015em; font-size: 30px; line-height: 1.1; color: var(--paper); font-variant-numeric: tabular-nums">Walmart &amp; Sam's Club</div><div style="font-size: 12.5px; color: rgba(255,255,255,0.6); font-weight: 500">Official financing partner</div></div>
+      <div style="display: flex; flex-direction: column; gap: 6px; align-items: center; text-align: center"><div style="font-family: 'Newsreader', Georgia, serif; font-weight: 400; letter-spacing: -0.015em; font-size: 30px; line-height: 1.1; color: var(--paper); font-variant-numeric: tabular-nums">Hilton · Hyatt · Choice</div><div style="font-size: 12.5px; color: rgba(255,255,255,0.6); font-weight: 500">Hotel capital partner</div></div>
+    </div>
+  </section>
+
+  <!-- ===== V5 Milestone Line ===== -->
+  <section aria-label="Milestone Line" style="background: var(--paper)">
+    <div style="padding: 40px 56px 20px">
+      <h2 style="margin: 0 0 16px; font-family: 'Newsreader', Georgia, serif; font-weight: 400; letter-spacing: -0.015em; font-size: 52px; line-height: 1.05; color: var(--bridge-navy)">From opportunity<br>to funded progress.</h2>
+      <p style="margin: 0; font-size: 15.5px; line-height: 1.55; color: var(--gray-600); max-width: 380px">Bridge provides and secures financing so you can move forward with confidence.</p>
+    </div>
+    <div style="padding: 26px 56px 10px; position: relative">
+      <div style="position: absolute; left: 166px; right: 166px; top: 49px; height: 1.5px; background: var(--gray-200)"></div>
+      <div style="display: flex; justify-content: space-between">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 14px; position: relative; z-index: 1; width: 220px">
+          <div style="width: 46px; height: 46px; border-radius: 999px; display: flex; align-items: center; justify-content: center; background: var(--paper); border: 1.5px solid var(--gray-300)"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#4A555F" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"></circle><circle cx="12" cy="12" r="2.5"></circle></svg></div>
+          <div style="font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; color: var(--bridge-navy)">Opportunity</div>
+          <div style="font-size: 12.5px; color: var(--gray-600); line-height: 1.5; text-align: center; margin-top: -6px">A plan to grow,<br>improve or acquire.</div>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 14px; position: relative; z-index: 1; width: 220px">
+          <div style="width: 46px; height: 46px; border-radius: 999px; display: flex; align-items: center; justify-content: center; background: var(--bridge-blue); border: 1.5px solid var(--bridge-blue)"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="19" r="2"></circle><circle cx="19" cy="5" r="2"></circle><path d="M7.4 17.4 C 10 15, 14 9.5, 16.6 7.2"></path></svg></div>
+          <div style="font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; color: var(--bridge-navy)">Financing Path</div>
+          <div style="font-size: 12.5px; color: var(--gray-600); line-height: 1.5; text-align: center; margin-top: -6px">Bridge evaluates, structures<br>and provides solutions.</div>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 14px; position: relative; z-index: 1; width: 220px">
+          <div style="width: 46px; height: 46px; border-radius: 999px; display: flex; align-items: center; justify-content: center; background: var(--paper); border: 1.5px solid var(--gray-300)"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#4A555F" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="m8.5 12.2 2.4 2.4 4.6-5"></path></svg></div>
+          <div style="font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; color: var(--bridge-navy)">Funded Progress</div>
+          <div style="font-size: 12.5px; color: var(--gray-600); line-height: 1.5; text-align: center; margin-top: -6px">Capital deployed.<br>Business moving forward.</div>
+        </div>
+      </div>
+    </div>
+    <div style="padding: 26px 56px 0">
+      <div style="background: var(--bg-standard); border-radius: 16px; overflow: hidden; display: grid; grid-template-columns: 360px 1fr 1.1fr; align-items: stretch">
+        <img src="../assets/images/hotel-exterior.jpg" alt="" style="width: 100%; height: 100%; min-height: 210px; object-fit: cover; display: block">
+        <div style="padding: 30px 28px; display: flex; flex-direction: column; justify-content: center; gap: 8px; background: var(--paper)">
+          <div style="font-size: 15.5px; font-weight: 600; color: var(--bridge-navy)">Hotel PIP / Renovation</div>
+          <div style="font-family: 'Newsreader', Georgia, serif; font-weight: 400; letter-spacing: -0.015em; font-size: 40px; line-height: 1; color: var(--bridge-navy); font-variant-numeric: tabular-nums">$12,500,000</div>
+          <div style="font-size: 11.5px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; color: var(--bridge-blue)">Bridge Direct Lending</div>
+        </div>
+        <div style="padding: 30px 32px; display: flex; flex-direction: column; justify-content: center; gap: 12px">
+          <div style="font-size: 14.5px; line-height: 1.65; color: var(--gray-700)">&ldquo;Bridge understood our goal and structured a solution that got us across the finish line.&rdquo;</div>
+          <div style="font-size: 13px; color: var(--gray-500)">&mdash; Owner, Select-Service Hotel</div>
+        </div>
+      </div>
+    </div>
+    <div style="padding: 30px 56px 56px">
+      <div style="font-size: 13px; color: var(--gray-600); margin-bottom: 18px">What are you trying to accomplish?</div>
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 18px">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 9px"><img src="https://unpkg.com/lucide-static@latest/icons/building-2.svg" alt="" style="width: 22px; height: 22px; opacity: 0.8"><span style="font-size: 12.5px; font-weight: 600; color: var(--bridge-navy)">Build</span></div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 9px"><img src="https://unpkg.com/lucide-static@latest/icons/paint-roller.svg" alt="" style="width: 22px; height: 22px; opacity: 0.8"><span style="font-size: 12.5px; font-weight: 600; color: var(--bridge-navy)">Improve</span></div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 9px"><img src="https://unpkg.com/lucide-static@latest/icons/key-round.svg" alt="" style="width: 22px; height: 22px; opacity: 0.8"><span style="font-size: 12.5px; font-weight: 600; color: var(--bridge-navy)">Acquire</span></div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 9px"><img src="https://unpkg.com/lucide-static@latest/icons/refresh-ccw.svg" alt="" style="width: 22px; height: 22px; opacity: 0.8"><span style="font-size: 12.5px; font-weight: 600; color: var(--bridge-navy)">Refinance</span></div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 9px"><img src="https://unpkg.com/lucide-static@latest/icons/boxes.svg" alt="" style="width: 22px; height: 22px; opacity: 0.8"><span style="font-size: 12.5px; font-weight: 600; color: var(--bridge-navy)">Inventory</span></div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 9px"><img src="https://unpkg.com/lucide-static@latest/icons/clipboard-list.svg" alt="" style="width: 22px; height: 22px; opacity: 0.8"><span style="font-size: 12.5px; font-weight: 600; color: var(--bridge-navy)">Orders</span></div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 9px"><img src="https://unpkg.com/lucide-static@latest/icons/wallet.svg" alt="" style="width: 22px; height: 22px; opacity: 0.8"><span style="font-size: 12.5px; font-weight: 600; color: var(--bridge-navy)">Working Capital</span></div>
+        <div style="width: 40px; height: 40px; border-radius: 10px; background: var(--bridge-blue); color: var(--paper); display: flex; align-items: center; justify-content: center; font-size: 17px">&rarr;</div>
+      </div>
+    </div>
+  </section>
+
+</div>
+<script>
+const W = '../assets/images/wins/';
+const deals = [
+  { label: 'Build a hotel', img: W + 'groundbreaking.png', name: 'Hotel New Construction', amount: 'Tru by Hilton', role: 'Bridge Direct Lending', desc: 'Senior construction loan · 106 keys · Ground-up development', quote: '“Bridge was the right partner from the start. They understood the project and moved quickly to get us to funding.”', attr: '— Owner / Developer' },
+  { label: 'Complete a PIP / Renovation', img: '../assets/images/hotel-exterior.jpg', name: 'Hotel PIP / Renovation', amount: '$12,500,000', role: 'Bridge Direct Lending', desc: 'Brand-mandated PIP, select-service hotel', quote: '“Bridge understood our goal and structured a solution that got us across the finish line.”', attr: '— Owner, Select-Service Hotel' },
+  { label: 'Acquire or refinance a hotel', img: W + 'hampton-refi.png', name: 'Hotel Refinance', amount: '$18,500,000', role: 'Financing Secured by Bridge', desc: 'CMBS refinance with cash-out · Closed in 35 days', quote: '“They translated a complicated capital stack into one clear path to closing.”', attr: '— Hotel Owner' },
+  { label: 'Finance inventory', img: W + 'dog-sauce.png', name: 'Consumer Brand in Retail', amount: '3,000 Walmart doors', role: 'Bridge Direct Lending', desc: 'New SKU launch, production financing', quote: '“We had the demand in place. Bridge gave us the capital to deliver.”', attr: '— CEO, Consumer Brand' },
+  { label: 'Fulfill a purchase order', img: W + 'ice-cream.png', name: 'Walmart Supplier Production', amount: '$500,000', role: 'Bridge Direct Lending', desc: 'Production financing tied to an approved Walmart order', quote: '“The order was real. Bridge made sure the production was funded.”', attr: '— Founder' },
+  { label: 'Fund receivables / working capital', img: W + 'dog-sauce.png', name: 'Consumer Brand Working Capital', amount: '$5,000,000', role: 'Bridge Direct Lending', desc: 'Working capital against receivables in retail', quote: '“Our cash stayed in the business while the orders shipped.”', attr: '— Operator' },
+  { label: 'Complete a business acquisition', img: W + 'ups-store.png', name: 'Location Purchase', amount: '$750,000', role: 'Bridge Direct Lending', desc: 'The UPS Store location purchase', quote: '“Bridge kept the purchase on schedule from request to funded.”', attr: '— Franchise Owner' }
+];
+let sel = 0;
+const list = document.getElementById('options');
+function renderOptions(){
+  list.innerHTML = '';
+  deals.forEach((d, i) => {
+    const on = i === sel;
+    const row = document.createElement('div');
+    row.className = 'opt' + (on ? ' on' : '');
+    row.innerHTML = '<span style="box-sizing:border-box; width:16px; height:16px; border-radius:999px; border:1.5px solid ' + (on ? 'var(--bridge-blue)' : 'var(--gray-400)') + '; background:' + (on ? 'var(--bridge-blue)' : 'transparent') + '; background-clip:content-box; padding:3px"></span><span style="font-size:14px; font-weight:' + (on ? '600' : '500') + '; color:var(--bridge-navy)">' + d.label + '</span>';
+    row.onclick = () => { sel = i; render(); };
+    list.appendChild(row);
+  });
+}
+function render(){
+  renderOptions();
+  const c = deals[sel];
+  document.getElementById('p-img').src = c.img;
+  for (const k of ['name','amount','role','desc','quote','attr']) document.getElementById('p-' + k).textContent = c[k];
+}
+render();
+
+(function(){
+  const modal = document.getElementById('hiwModal');
+  const player = document.getElementById('hiwPlayer');
+  const openBtn = document.getElementById('hiwOpen');
+  const closeBtn = document.getElementById('hiwClose');
+  if (!modal || !player || !openBtn) return;
+  function open(){
+    if (typeof modal.showModal === 'function') modal.showModal();
+    else modal.setAttribute('open','');
+    try { player.play(); } catch(e) {}
+  }
+  function close(){
+    player.pause();
+    if (typeof modal.close === 'function') modal.close();
+    else modal.removeAttribute('open');
+  }
+  openBtn.addEventListener('click', open);
+  closeBtn && closeBtn.addEventListener('click', close);
+  modal.addEventListener('click', (e) => { if (e.target === modal) close(); });
+  modal.addEventListener('close', () => { player.pause(); });
+})();
+</script>
+</body>
+</html>

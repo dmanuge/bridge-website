@@ -54,6 +54,7 @@ Your concept becomes the next V number automatically. Please keep copy within th
 | V8 | Customer Documentary | One customer, one outcome, full frame |
 | V9 | Funded Object Full Build | Full-scroll V1: hero deal, stat band, successes ledger, milestones, customer story, chips |
 | V10 | Two Doors Full Build | Full-scroll V6: split doors hero with recent financings, shared proof system below |
+| V11 | Funded Object Stack | V1 hero + partner logos → Concierge → How It Works video → Documentary → Milestone Line |
 
 ## Explorations
 
