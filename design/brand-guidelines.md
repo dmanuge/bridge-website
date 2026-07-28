@@ -14,9 +14,8 @@ These guidelines are visually extracted from the supplied six-concept raster boa
 - Keep clear space around the mark equal to at least the cap height of the “B”
 
 ## Typography
-### Recommended pairing
-- **Display serif:** Playfair Display is the closest common match. Cormorant Garamond is a softer alternate; DM Serif Display is a sturdier alternate.
-- **Sans serif:** Inter is the closest practical match. Neue Haas Grotesk, Helvetica Neue, or Arial can be fallbacks.
+### Selected type family
+- **Display and sans serif:** DM Sans is used throughout the system. Helvetica Neue or Arial can be fallbacks.
 
 ### Usage
 - Hero H1: 56–72 px desktop, 0.96–1.05 line-height, medium/semibold
@@ -40,12 +39,12 @@ Colors below are sampled or reconstructed from the supplied board.
 | Slate | **#535760** | Secondary text and metadata |
 | Stone | **#EEEAE5** | Soft panels and card fills |
 | Hairline | **#D9D8D5** | Dividers, borders, inactive controls |
-| Warm Brass | **#927653** | Optional imagery-led accent; use sparingly |
+| Gold Accent | **#C9A24E** | Premium details, active milestones, status indicators, and fine rules |
 
 ### Color behavior
 - Favor navy, ivory, and white as the dominant triad.
 - Use royal blue for interaction and emphasis, not as a large decorative field.
-- Keep warm brass mostly inside photography or very small premium details.
+- Keep gold to small premium details; do not use it as a large field or for body text.
 - Dark photo sections should use a navy-to-transparent overlay so white text remains readable.
 
 ## Layout and spacing
@@ -100,6 +99,6 @@ Colors below are sampled or reconstructed from the supplied board.
 
 ## Recommended implementation fonts
 ```css
-font-family: "Playfair Display", "Cormorant Garamond", Georgia, serif;
-font-family: Inter, "Helvetica Neue", Arial, sans-serif;
+font-family: "DM Sans", "Helvetica Neue", Arial, sans-serif;
+font-family: "DM Sans", "Helvetica Neue", Arial, sans-serif;
 ```
