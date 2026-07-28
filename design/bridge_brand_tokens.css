@@ -1,0 +1,57 @@
+:root {
+  --bridge-navy-950: #04112A;
+  --bridge-blue-700: #143B85;
+  --bridge-ivory-050: #F9F7F4;
+  --bridge-white: #FFFFFF;
+  --bridge-ink-900: #10131C;
+  --bridge-slate-600: #535760;
+  --bridge-stone-100: #EEEAE5;
+  --bridge-line-200: #D9D8D5;
+  --bridge-brass-500: #927653;
+
+  --font-display: "Playfair Display", "Cormorant Garamond", Georgia, serif;
+  --font-sans: Inter, "Helvetica Neue", Arial, sans-serif;
+
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --space-unit: 8px;
+  --content-max: 1280px;
+  --hairline: 1px solid var(--bridge-line-200);
+}
+
+.bridge-h1 {
+  font-family: var(--font-display);
+  font-size: clamp(3.5rem, 6vw, 4.5rem);
+  line-height: 1;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+.bridge-body {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--bridge-ink-900);
+}
+
+.bridge-button-primary {
+  min-height: 46px;
+  padding: 0 20px;
+  border: 1px solid var(--bridge-navy-950);
+  border-radius: var(--radius-sm);
+  background: var(--bridge-navy-950);
+  color: var(--bridge-white);
+  font-family: var(--font-sans);
+  font-weight: 600;
+}
+
+.bridge-button-secondary {
+  min-height: 46px;
+  padding: 0 20px;
+  border: 1px solid var(--bridge-navy-950);
+  border-radius: var(--radius-sm);
+  background: var(--bridge-white);
+  color: var(--bridge-navy-950);
+  font-family: var(--font-sans);
+  font-weight: 600;
+}
