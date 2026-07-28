@@ -10,7 +10,7 @@
   --bridge-gold-500: #C9A24E;
   --bridge-brass-500: var(--bridge-gold-500);
 
-  --font-display: "DM Sans", "Helvetica Neue", Arial, sans-serif;
+  --font-display: "Source Serif 4", Georgia, "Times New Roman", serif;
   --font-sans: "DM Sans", "Helvetica Neue", Arial, sans-serif;
 
   --radius-sm: 6px;

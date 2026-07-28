@@ -5,18 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Bridge homepage candidates: compare A and B</title>
 <style>
+  @font-face {
+    font-family: "DM Sans";
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url("assets/fonts/dm-sans-latin-variable.woff2") format("woff2");
+  }
   * { box-sizing: border-box; }
   html, body { height: 100%; }
-  body { margin: 0; background: #0A1C30; font-family: "Mabry Pro", "Hanken Grotesk", "Segoe UI", system-ui, sans-serif; }
+  body { margin: 0; background: #04112A; font-family: "DM Sans", "Helvetica Neue", Arial, sans-serif; }
 
-  .cmp-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 10; height: 56px; display: flex; align-items: center; gap: 18px; padding: 0 clamp(14px, 2.5vw, 28px); background: #0A1C30; border-bottom: 1px solid rgba(240, 246, 252, .17); color: #F3F7FB; }
+  .cmp-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 10; height: 56px; display: flex; align-items: center; gap: 18px; padding: 0 clamp(14px, 2.5vw, 28px); background: #04112A; border-bottom: 1px solid rgba(255, 255, 255, .2); color: #FFFFFF; }
   .cmp-wm { display: block; height: 27px; width: auto; }
   .cmp-lab { font-size: 9px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: #9AAFC4; border-left: 1px solid rgba(240, 246, 252, .17); padding-left: 18px; }
   .cmp-seg { display: flex; gap: 6px; margin-left: auto; }
   .cmp-seg button { appearance: none; border: 1px solid transparent; background: transparent; color: #9AAFC4; font-family: inherit; font-size: 11px; font-weight: 650; letter-spacing: .14em; text-transform: uppercase; padding: 9px 14px 8px; cursor: pointer; border-radius: 3px; box-shadow: inset 0 -2px 0 transparent; }
   .cmp-seg button:hover { color: #F3F7FB; }
-  .cmp-seg button:focus-visible { outline: 2px solid #2350C4; outline-offset: 2px; }
-  .cmp-seg button[aria-pressed="true"] { color: #FFFFFF; background: #14304E; box-shadow: inset 0 -2px 0 #2350C4; }
+  .cmp-seg button:focus-visible { outline: 2px solid #C9A24E; outline-offset: 2px; }
+  .cmp-seg button[aria-pressed="true"] { color: #FFFFFF; background: #143B85; box-shadow: inset 0 -2px 0 #C9A24E; }
   .cmp-hint { font-size: 9px; letter-spacing: .16em; text-transform: uppercase; color: #5E7288; }
   @media (max-width: 760px) { .cmp-hint, .cmp-lab { display: none; } }
 

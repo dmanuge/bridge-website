@@ -14,13 +14,15 @@ These guidelines are visually extracted from the supplied six-concept raster boa
 - Keep clear space around the mark equal to at least the cap height of the “B”
 
 ## Typography
-### Selected type family
-- **Display and sans serif:** DM Sans is used throughout the system. Helvetica Neue or Arial can be fallbacks.
+### Selected type families
+- **Display serif:** Source Serif 4 gives hero headings, section titles, financial figures, and quotations an assured editorial voice. Georgia and Times New Roman are fallbacks.
+- **Sans serif:** DM Sans keeps navigation, controls, labels, body copy, and functional headings clear and contemporary. Helvetica Neue and Arial are fallbacks.
 
 ### Usage
 - Hero H1: 56–72 px desktop, 0.96–1.05 line-height, medium/semibold
 - Section H2: 36–48 px, 1.0–1.1 line-height
-- Card title / large amount: 28–40 px serif
+- Card title: 24–32 px sans, semibold
+- Large amount: 28–40 px serif
 - Body: 15–17 px sans, 1.45–1.6 line-height
 - Navigation / labels: 11–13 px sans, medium, restrained tracking
 - Captions / metadata: 11–12 px sans
@@ -99,6 +101,6 @@ Colors below are sampled or reconstructed from the supplied board.
 
 ## Recommended implementation fonts
 ```css
-font-family: "DM Sans", "Helvetica Neue", Arial, sans-serif;
+font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
 font-family: "DM Sans", "Helvetica Neue", Arial, sans-serif;
 ```
