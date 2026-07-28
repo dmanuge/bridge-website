@@ -12,6 +12,12 @@ python3 -m http.server 8080
 
 and open http://localhost:8080/.
 
+To flip between the two full builds (V9 Funded Object vs V10 Two Doors), open `compare.html` and use the A/B header toggle (keys: A, B, or arrows).
+
+`compare-standalone.html` is the same A/B comparison in a single self-contained file (both candidates, fonts, photography and logo inlined) for sharing outside the repo, e.g. by email or upload.
+
+`compare-standalone.html` is that same A/B comparison as one self-contained file (both candidates, fonts, photography and logo inlined). Use it to share the comparison outside the repo, since it needs no server and no `assets/` folder.
+
 ## Adding your concept
 
 1. Add a single self-contained HTML file to `concepts/` (inline your CSS/JS).
@@ -36,3 +42,9 @@ Your concept becomes the next V number automatically. Please keep copy within th
 | V6 | Two Doors Frame | Hotel and consumer brand, side by side |
 | V7 | Financing Concierge | Pick what you're financing; the proof follows (interactive) |
 | V8 | Customer Documentary | One customer, one outcome, full frame |
+| V9 | Funded Object Full Build | Full-scroll V1: hero deal, stat band, successes ledger, milestones, customer story, chips |
+| V10 | Two Doors Full Build | Full-scroll V6: split doors hero with recent financings, shared proof system below |
+
+## Explorations
+
+`explorations/` holds the wider design studies behind the concepts (not registered in the viewer): the ten-direction homepage study (2026-07-24) and the style reference with the two full-build candidates (2026-07-27). Both are self-contained HTML; open directly in a browser.
