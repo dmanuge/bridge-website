@@ -1,0 +1,88 @@
+:root {
+  /* Brand color primitives */
+  --navy-950: #04112a;
+  --navy-900: #091935;
+  --blue-700: #143b85;
+  --blue-600: #1e50a7;
+  --ivory-50: #f9f7f4;
+  --white: #ffffff;
+  --ink-900: #10131c;
+  --slate-700: #3e424b;
+  --slate-650: #45566a;
+  --slate-600: #535760;
+  --steel-light: #b9c2ce;
+  --steel-muted: #77899c;
+  --stone-100: #eeeae5;
+  --line-200: #d9d8d5;
+  --gold-500: #c9a24e;
+  --success: #257059;
+
+  /* Semantic color roles */
+  --surface-page: var(--ivory-50);
+  --surface-raised: var(--white);
+  --surface-soft: var(--stone-100);
+  --surface-brand: var(--navy-950);
+  --surface-action: var(--blue-700);
+  --text-primary: var(--ink-900);
+  --text-secondary: var(--slate-600);
+  --text-secondary-strong: var(--slate-650);
+  --text-inverse: #f3f7fb;
+  --text-inverse-muted: var(--steel-light);
+  --text-inverse-subtle: var(--steel-muted);
+  --border-default: var(--line-200);
+  --focus-ring: var(--gold-500);
+
+  /* Transparent surface and overlay roles */
+  --header-surface: rgb(249 247 244 / 94%);
+  --header-border: rgb(217 216 213 / 70%);
+  --inverse-08: rgb(255 255 255 / 8%);
+  --inverse-14: rgb(255 255 255 / 14%);
+  --inverse-16: rgb(255 255 255 / 16%);
+  --inverse-18: rgb(255 255 255 / 18%);
+  --inverse-20: rgb(255 255 255 / 20%);
+  --inverse-55: rgb(255 255 255 / 55%);
+  --inverse-72: rgb(255 255 255 / 72%);
+  --inverse-78: rgb(255 255 255 / 78%);
+  --inverse-80: rgb(255 255 255 / 80%);
+  --inverse-82: rgb(243 247 251 / 82%);
+  --inverse-85: rgb(232 239 246 / 85%);
+  --inverse-line: rgb(243 247 251 / 14%);
+  --gold-rule: rgb(201 162 78 / 72%);
+  --navy-shadow: rgb(4 17 42 / 12%);
+  --navy-shadow-strong: rgb(4 17 42 / 18%);
+  --navy-overlay-12: rgb(4 17 42 / 12%);
+  --navy-overlay-14: rgb(4 17 42 / 14%);
+  --navy-overlay-40: rgb(4 17 42 / 40%);
+  --navy-overlay-42: rgb(4 17 42 / 42%);
+  --navy-overlay-52: rgb(4 17 42 / 52%);
+  --navy-overlay-72: rgb(4 17 42 / 72%);
+  --navy-overlay-90: rgb(4 17 42 / 90%);
+  --navy-overlay-94: rgb(4 17 42 / 94%);
+  --navy-overlay-96: rgb(4 17 42 / 96%);
+  --door-overlay-42: rgb(6 18 32 / 42%);
+  --door-overlay-50: rgb(6 18 32 / 50%);
+  --door-overlay-90: rgb(6 18 32 / 90%);
+
+  /* Typography */
+  --font-display:
+    "Source Serif 4 Variable", "Source Serif 4", Georgia, "Times New Roman",
+    serif;
+  --font-sans: "DM Sans", "Helvetica Neue", Arial, sans-serif;
+  --type-display: clamp(2.75rem, 6vw, 5rem);
+  --type-section-title: clamp(2rem, 3.6vw, 3rem);
+  --type-card-title: clamp(1.4375rem, 2.2vw, 1.875rem);
+  --type-body: 1rem;
+  --type-body-small: 0.84375rem;
+  --type-label: 0.625rem;
+
+  /* Layout and shape */
+  --container: 80rem;
+  --gutter: clamp(1.25rem, 4vw, 4rem);
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-pill: 999px;
+  --border-hairline: 1px solid var(--border-default);
+  --shadow: 0 1.5rem 4rem var(--navy-shadow);
+  --section-space: clamp(4.5rem, 9vw, 8rem);
+  --section-space-compact: clamp(3rem, 6vw, 5.5rem);
+}

@@ -1,0 +1,140 @@
+---
+import { stories } from "@/data/site";
+import Action from "@/components/Action.astro";
+import PageHero from "@/components/PageHero.astro";
+import ResponsiveImage from "@/components/ResponsiveImage.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Success Stories"
+  description="See how hotel owners and consumer brands have used Bridge financing to move important opportunities forward."
+>
+  <PageHero
+    eyebrow="Success stories"
+    title="Progress has a story."
+    description="Meet the operators and founders behind the opportunities—and see Bridge’s role in the financing."
+  />
+
+  <section class="section">
+    <div class="container story-grid">
+      {
+        stories.map((story) => (
+          <article class="story-card surface-card">
+            <a
+              href={`/success-stories/${story.slug}`}
+              aria-label={`Read ${story.company} story`}
+            >
+              <ResponsiveImage
+                src={story.image}
+                alt={story.imageAlt}
+                width={1600}
+                height={1000}
+                sizes="(max-width: 672px) 100vw, 50vw"
+              />
+            </a>
+            <div class="story-card__body">
+              <p class="eyebrow">{story.financingType}</p>
+              <h2>
+                <a href={`/success-stories/${story.slug}`}>{story.company}</a>
+              </h2>
+              <p>“{story.quote}”</p>
+              <dl>
+                <div>
+                  <>
+                    <dt>{story.resultLabel}</dt>
+                    <dd>{story.result}</dd>
+                  </>
+                </div>
+                <div>
+                  <>
+                    <dt>Bridge’s role</dt>
+                    <dd>{story.role}</dd>
+                  </>
+                </div>
+              </dl>
+              <Action
+                href={`/success-stories/${story.slug}`}
+                variant="text"
+                arrow
+              >
+                Read the story
+              </Action>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .story-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: clamp(1rem, 4vw, 3rem);
+  }
+
+  .story-card {
+    overflow: hidden;
+  }
+
+  .story-card :global(picture) {
+    display: block;
+  }
+
+  .story-card :global(picture img) {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    transition: transform 300ms ease;
+  }
+
+  .story-card > a:hover :global(img) {
+    transform: scale(1.02);
+  }
+
+  .story-card__body {
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+  }
+
+  .story-card h2 {
+    margin: 0;
+    font-size: 2.5rem;
+    line-height: 1;
+  }
+
+  .story-card h2 a {
+    text-decoration: none;
+  }
+
+  .story-card__body > p:not(.eyebrow) {
+    color: var(--slate-600);
+  }
+
+  .story-card dl {
+    display: grid;
+    border-block: var(--border-hairline);
+    margin-block: 1.5rem;
+    padding-block: 1rem;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .story-card dt {
+    color: var(--slate-600);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+  }
+
+  .story-card dd {
+    margin: 0.25rem 0 0;
+    font-weight: 700;
+  }
+
+  @media (max-width: 42rem) {
+    .story-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

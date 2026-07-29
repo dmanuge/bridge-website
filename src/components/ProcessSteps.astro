@@ -1,0 +1,93 @@
+---
+import { processSteps } from "@/data/site";
+---
+
+<ol class="process">
+  {
+    processSteps.map((step) => (
+      <li>
+        <span class="process__number">{step.number}</span>
+        <h3>{step.title}</h3>
+        <p>{step.description}</p>
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .process {
+    position: relative;
+    display: grid;
+    margin: 2.5rem 0 0;
+    padding: 0;
+    list-style: none;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+
+  .process::before {
+    position: absolute;
+    top: 1.0625rem;
+    right: 8%;
+    left: 8%;
+    height: 1px;
+    background: var(--border-default);
+    content: "";
+  }
+
+  .process li {
+    position: relative;
+    padding-top: 3.25rem;
+    text-align: center;
+  }
+
+  .process__number {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 50%;
+    display: grid;
+    width: 2.1875rem;
+    height: 2.1875rem;
+    border: var(--border-hairline);
+    border-radius: 50%;
+    background: var(--surface-raised);
+    color: var(--text-secondary);
+    font-size: 1rem;
+    transform: translateX(-50%);
+    place-content: center;
+  }
+
+  .process li:nth-child(2) .process__number {
+    border-color: var(--gold-500);
+    background: var(--gold-500);
+    color: var(--navy-950);
+  }
+
+  .process h3 {
+    margin: 0;
+    font-size: 0.65625rem;
+    font-weight: 680;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .process p {
+    max-width: 26ch;
+    margin: 0.4375rem auto 0;
+    color: var(--text-secondary);
+    font-size: 0.8125rem;
+    line-height: 1.55;
+  }
+
+  @media (max-width: 42rem) {
+    .process {
+      grid-template-columns: 1fr;
+      gap: 1.875rem;
+    }
+
+    .process::before {
+      display: none;
+    }
+  }
+</style>

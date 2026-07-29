@@ -1,0 +1,129 @@
+---
+import FinalCta from "@/components/FinalCta.astro";
+import Action from "@/components/Action.astro";
+import PageHero from "@/components/PageHero.astro";
+import ProcessSteps from "@/components/ProcessSteps.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="How It Works"
+  description="See how Bridge evaluates financing opportunities, clarifies its role, and supports qualified requests through funding."
+>
+  <PageHero
+    eyebrow="How it works"
+    title="A clear path through financing."
+    description="Bridge combines technology, capital, and hands-on execution to keep the process focused on the opportunity."
+    image={{
+      src: "/images/brand/hotel-construction-sunrise.png",
+      alt: "Hotel project moving from planning toward construction",
+    }}
+  />
+
+  <section class="section">
+    <div class="container">
+      <ProcessSteps />
+    </div>
+  </section>
+
+  <section class="section detail">
+    <div class="container detail__grid">
+      <article>
+        <p class="eyebrow">Hotel financing</p>
+        <h2>Capital for the property plan.</h2>
+        <p>
+          Bridge directly lends for select construction and PIP transactions and
+          provides expert-led financing execution for other qualified hotel
+          needs.
+        </p>
+        <Action href="/hotel-financing" variant="text" arrow
+          >Explore hotel financing</Action
+        >
+      </article>
+      <article>
+        <p class="eyebrow">Consumer brands</p>
+        <h2>Capital for the operating cycle.</h2>
+        <p>
+          Bridge can finance qualified inventory, production, order, receivable,
+          and working capital needs around the timing of retail growth.
+        </p>
+        <Action href="/consumer-brands" variant="text" arrow
+          >Explore consumer brands</Action
+        >
+      </article>
+    </div>
+  </section>
+
+  <section class="video-section">
+    <div class="container video-section__grid">
+      <SectionHeading
+        eyebrow="Production financing"
+        title="See the program in two minutes."
+        description="Learn how an approved production facility can support repeat retail orders."
+      />
+      <video
+        controls
+        playsinline
+        preload="metadata"
+        poster="/video/about-the-program-poster.jpg"
+        aria-label="About the Bridge production financing program"
+      >
+        <source src="/video/about-the-program.mp4" type="video/mp4" />
+        Your browser does not support embedded video.
+      </video>
+    </div>
+  </section>
+
+  <FinalCta source="how-it-works-closing" />
+</BaseLayout>
+
+<style>
+  .detail__grid,
+  .video-section__grid {
+    display: grid;
+    align-items: center;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(2rem, 7vw, 7rem);
+  }
+
+  .detail {
+    background: var(--white);
+  }
+
+  .detail article {
+    padding: clamp(1.5rem, 4vw, 3rem);
+    border: var(--border-hairline);
+    border-radius: var(--radius-md);
+    background: var(--ivory-50);
+  }
+
+  .detail h2 {
+    margin: 0;
+    font-size: 2.5rem;
+    line-height: 1;
+  }
+
+  .detail article > p:not(.eyebrow) {
+    color: var(--slate-600);
+  }
+
+  .video-section {
+    padding-block: var(--section-space);
+    background: var(--stone-100);
+  }
+
+  .video-section video {
+    width: 100%;
+    border-radius: var(--radius-md);
+    background: var(--navy-950);
+    box-shadow: var(--shadow);
+  }
+
+  @media (max-width: 48rem) {
+    .detail__grid,
+    .video-section__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

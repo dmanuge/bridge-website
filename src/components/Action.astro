@@ -1,0 +1,38 @@
+---
+interface Props {
+  href?: string;
+  variant?: "primary" | "light" | "outline" | "text";
+  type?: "button" | "submit" | "reset";
+  arrow?: boolean;
+  ariaLabel?: string;
+  analytics?: string;
+  analyticsLabel?: string;
+  class?: string;
+}
+
+const {
+  href,
+  variant = "primary",
+  type = "button",
+  arrow = false,
+  ariaLabel,
+  analytics,
+  analyticsLabel,
+  class: className,
+} = Astro.props;
+const Tag = href ? "a" : "button";
+const variantClass =
+  variant === "text" ? "text-link" : `button button--${variant}`;
+---
+
+<Tag
+  href={href}
+  type={href ? undefined : type}
+  aria-label={ariaLabel}
+  class:list={[variantClass, className]}
+  data-analytics={analytics}
+  data-analytics-label={analyticsLabel}
+>
+  <slot />
+  {arrow && <span aria-hidden="true">→</span>}
+</Tag>

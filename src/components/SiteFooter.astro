@@ -1,0 +1,152 @@
+---
+import Action from "@/components/Action.astro";
+import { siteSettings } from "@/data/site";
+import { applicationHref } from "@/lib/site";
+---
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <img
+          src="/logos/bridge-logo-white.png"
+          alt="Bridge"
+          width="142"
+          height="38"
+        />
+        <p>
+          Financing for hotel owners and consumer brands. Delivered by Bridge.
+        </p>
+        <Action href={applicationHref("footer")} variant="light" arrow
+          >Get Started</Action
+        >
+      </div>
+      <nav aria-label="Financing">
+        <h2>Financing</h2>
+        <a href="/hotel-financing">Hotel Financing</a>
+        <a href="/consumer-brands">Consumer Brands</a>
+        <a href="/how-it-works">How It Works</a>
+        <a href="/success-stories">Success Stories</a>
+      </nav>
+      <nav aria-label="Company">
+        <h2>Company</h2>
+        <a href="/about">About</a>
+        <a href="/contact">Contact</a>
+        <a href={siteSettings.privacyUrl}>Privacy Policy</a>
+        <a href={siteSettings.termsUrl}>Terms of Use</a>
+      </nav>
+    </div>
+    <div class="footer__legal">
+      <p>
+        All financing is subject to application, credit review, underwriting,
+        approvals, and definitive documentation. Examples are illustrative and
+        do not constitute an offer of credit.
+      </p>
+      <p>
+        © {new Date().getFullYear()}
+        {siteSettings.companyName} ({siteSettings.legalName}). NMLS ID {
+          siteSettings.nmls
+        }.
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    padding-block: 5rem 2rem;
+    background: var(--navy-950);
+    color: var(--white);
+  }
+
+  .footer__grid {
+    display: grid;
+    grid-template-columns: minmax(16rem, 2fr) repeat(2, 1fr);
+    gap: clamp(2rem, 6vw, 7rem);
+  }
+
+  .footer__brand img {
+    width: 8.5rem;
+    height: auto;
+    margin-bottom: 1.5rem;
+  }
+
+  .footer__brand p {
+    max-width: 24rem;
+    margin: 0 0 1.5rem;
+    color: var(--inverse-72);
+  }
+
+  .footer nav {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.7rem;
+  }
+
+  .footer nav h2 {
+    margin: 0 0 0.7rem;
+    color: var(--gold-500);
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .footer nav a {
+    color: var(--inverse-80);
+    font-size: 0.9rem;
+    text-decoration: none;
+  }
+
+  .footer nav a:hover {
+    color: var(--white);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .footer__legal {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 2rem;
+    border-top: 1px solid var(--inverse-14);
+    margin-top: 4rem;
+    padding-top: 1.5rem;
+  }
+
+  .footer__legal p {
+    max-width: 45rem;
+    margin: 0;
+    color: var(--inverse-55);
+    font-size: 0.72rem;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 56.25rem) {
+    .footer__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (max-width: 48rem) {
+    .footer__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .footer__brand {
+      grid-column: 1 / -1;
+    }
+
+    .footer__legal {
+      display: grid;
+    }
+  }
+
+  @media (max-width: 36rem) {
+    .footer__grid {
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+    }
+  }
+</style>

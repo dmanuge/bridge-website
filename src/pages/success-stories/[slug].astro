@@ -1,0 +1,131 @@
+---
+import FinalCta from "@/components/FinalCta.astro";
+import PageHero from "@/components/PageHero.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
+import { stories, type CustomerStory } from "@/data/site";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { siteUrl } from "@/lib/site";
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return stories.map((story) => ({
+    params: { slug: story.slug },
+    props: { story },
+  }));
+}
+
+interface Props {
+  story: CustomerStory;
+}
+
+const { story } = Astro.props;
+const pageUrl = `${siteUrl}/success-stories/${story.slug}`;
+---
+
+<BaseLayout
+  title={`${story.company} Success Story`}
+  description={story.summary}
+  image={story.image}
+  schema={{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: `${story.company} success story`,
+    description: story.summary,
+    image: new URL(story.image, siteUrl).toString(),
+    mainEntityOfPage: pageUrl,
+    author: { "@type": "Organization", name: "Bridge" },
+    publisher: { "@type": "Organization", name: "Bridge" },
+  }}
+>
+  <article>
+    <PageHero
+      class="story-hero"
+      eyebrow={story.financingType}
+      title={story.company}
+      image={{ src: story.image, alt: story.imageAlt }}
+    >
+      <p class="story-hero__quote">“{story.quote}”</p>
+      <p class="story-hero__byline">{story.name} · {story.title}</p>
+    </PageHero>
+
+    <section class="section">
+      <div class="container story-body">
+        <SectionHeading
+          eyebrow="The opportunity"
+          title="Capital timed to the work."
+        />
+        <div>
+          <p>{story.summary}</p>
+          <p>
+            Bridge worked with the business to evaluate the opportunity and
+            provide a financing path aligned to its operating timeline. Final
+            financing was subject to underwriting and definitive documentation.
+          </p>
+          <dl>
+            <div><dt>{story.resultLabel}</dt><dd>{story.result}</dd></div>
+            <div><dt>Financing</dt><dd>{story.financingType}</dd></div>
+            <div><dt>Bridge’s role</dt><dd>{story.role}</dd></div>
+          </dl>
+        </div>
+      </div>
+    </section>
+  </article>
+
+  <FinalCta source={`story-${story.slug}`} />
+</BaseLayout>
+
+<style>
+  .story-hero__quote {
+    max-width: 35rem;
+    margin: 1.5rem 0 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 3vw, 2.8rem);
+    line-height: 1.15;
+  }
+
+  .story-hero__byline {
+    margin: 1.5rem 0 0;
+    color: var(--inverse-72);
+    font-size: 0.9rem;
+  }
+
+  .story-body {
+    display: grid;
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: clamp(3rem, 8vw, 8rem);
+  }
+
+  .story-body > div:last-child > p {
+    margin-top: 0;
+    color: var(--slate-600);
+    font-size: 1.1rem;
+  }
+
+  .story-body dl {
+    display: grid;
+    border-top: var(--border-hairline);
+    margin-top: 3rem;
+    padding-top: 2rem;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+
+  .story-body dt {
+    color: var(--slate-600);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+  }
+
+  .story-body dd {
+    margin: 0.25rem 0 0;
+    font-weight: 700;
+  }
+
+  @media (max-width: 42rem) {
+    .story-body,
+    .story-body dl {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

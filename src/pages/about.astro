@@ -1,0 +1,132 @@
+---
+import FinalCta from "@/components/FinalCta.astro";
+import PageHero from "@/components/PageHero.astro";
+import ProofBand from "@/components/ProofBand.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="About"
+  description="Bridge combines technology, capital, and hands-on execution to simplify financing for hotel owners and consumer brands."
+>
+  <PageHero
+    eyebrow="About Bridge"
+    title="Built for businesses doing real work."
+    description="Bridge combines technology and hands-on execution to simplify financing for hotel owners and consumer brands."
+  />
+
+  <ProofBand />
+
+  <section class="section">
+    <div class="container story-grid">
+      <SectionHeading
+        eyebrow="Our purpose"
+        title="Make business financing clearer."
+      />
+      <div class="prose">
+        <p>
+          Growing businesses deserve a financing process that begins with their
+          opportunity—not a maze of products and handoffs. Bridge helps
+          businesses start in the right place, understand the path, and keep
+          moving.
+        </p>
+        <p>
+          For qualified transactions, Bridge may provide capital directly or
+          lead financing execution through closing. That role is stated clearly
+          so businesses know who is doing what.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section values">
+    <div class="container">
+      <SectionHeading
+        eyebrow="How we work"
+        title="Principles for every path."
+      />
+      <div class="values__grid">
+        <article>
+          <span>01</span>
+          <h2>Specific</h2>
+          <p>
+            Start with the transaction, the timing, and what the capital needs
+            to accomplish.
+          </p>
+        </article>
+        <article>
+          <span>02</span>
+          <h2>Hands-on</h2>
+          <p>
+            Stay close to the details and maintain a clear line of
+            responsibility.
+          </p>
+        </article>
+        <article>
+          <span>03</span>
+          <h2>Transparent</h2>
+          <p>
+            State Bridge’s role, requirements, and next steps in plain language.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <FinalCta source="about-closing" />
+</BaseLayout>
+
+<style>
+  .story-grid {
+    display: grid;
+    grid-template-columns: 0.85fr 1.15fr;
+    gap: clamp(3rem, 8vw, 8rem);
+  }
+
+  .prose p {
+    margin-top: 0;
+    color: var(--slate-600);
+    font-size: 1.1rem;
+  }
+
+  .values {
+    background: var(--stone-100);
+  }
+
+  .values__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+
+  .values article {
+    border: var(--border-hairline);
+    border-radius: var(--radius-md);
+    padding: 2rem;
+    background: var(--white);
+  }
+
+  .values article > span {
+    color: var(--blue-700);
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+  }
+
+  .values h2 {
+    margin: 3rem 0 0.5rem;
+    font-size: 2rem;
+  }
+
+  .values p {
+    margin: 0;
+    color: var(--slate-600);
+  }
+
+  @media (max-width: 45rem) {
+    .story-grid,
+    .values__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

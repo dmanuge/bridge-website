@@ -1,0 +1,29 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Action from "@/components/Action.astro";
+import PageHero from "@/components/PageHero.astro";
+---
+
+<BaseLayout
+  title="Page Not Found"
+  description="The requested page could not be found."
+  noindex
+>
+  <PageHero
+    class="not-found"
+    eyebrow="404"
+    title="This path doesn’t lead anywhere."
+    description="Return home or choose one of Bridge’s two financing paths."
+  >
+    <Fragment slot="actions">
+      <Action href="/" variant="light">Return home</Action>
+      <Action href="/contact" variant="outline">Contact Bridge</Action>
+    </Fragment>
+  </PageHero>
+</BaseLayout>
+
+<style>
+  :global(.not-found) {
+    min-height: 60svh;
+  }
+</style>

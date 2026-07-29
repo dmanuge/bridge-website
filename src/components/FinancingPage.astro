@@ -1,0 +1,225 @@
+---
+import FinalCta from "@/components/FinalCta.astro";
+import Action from "@/components/Action.astro";
+import PageHero from "@/components/PageHero.astro";
+import ResultsLedger from "@/components/ResultsLedger.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
+import type { FinancingPath } from "@/data/site";
+import { results } from "@/data/site";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { applicationHref } from "@/lib/site";
+
+interface Props {
+  path: FinancingPath;
+}
+
+const { path } = Astro.props;
+const isHotel = path.slug === "hotel-financing";
+const relevantResults = results.filter((result) =>
+  isHotel
+    ? result.category.toLowerCase().includes("hotel")
+    : !result.category.toLowerCase().includes("hotel"),
+);
+---
+
+<BaseLayout
+  title={path.title}
+  description={path.description}
+  image={path.heroImage}
+  schema={{
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: path.title,
+    description: path.description,
+    provider: { "@type": "Organization", name: "Bridge" },
+    areaServed: "US",
+  }}
+>
+  <PageHero
+    eyebrow={path.eyebrow}
+    title={path.title}
+    description={path.description}
+    image={{ src: path.heroImage, alt: path.heroAlt }}
+  >
+    <Fragment slot="actions">
+      <Action
+        href={applicationHref(`${path.slug}-hero`, path.slug)}
+        variant="light"
+        arrow
+        analytics="application_exit">Get Started</Action
+      >
+      <Action href="#solutions" variant="outline">Explore solutions</Action>
+    </Fragment>
+  </PageHero>
+
+  <section id="solutions" class="section solutions">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Financing solutions"
+        title="Capital aligned to the work."
+      />
+      <div class="solutions__grid">
+        {
+          path.products.map((product, index) => (
+            <article>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <h3>{product.title}</h3>
+              <p>{product.description}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section eligibility">
+    <div class="container eligibility__grid">
+      <SectionHeading
+        eyebrow="A strong starting point"
+        title="What helps us evaluate your request."
+        theme="dark"
+      />
+      <ul>
+        {path.eligibility.map((item) => <li>{item}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section related-results">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Recent financing"
+        title="Proof in the progress."
+      />
+      <ResultsLedger results={relevantResults} />
+    </div>
+  </section>
+
+  <section class="section faq">
+    <div class="container faq__grid">
+      <SectionHeading
+        eyebrow="Common questions"
+        title="Good financing starts with clarity."
+      />
+      <div>
+        {
+          path.faqs.map((faq) => (
+            <details>
+              <summary>{faq.question}</summary>
+              <p>{faq.answer}</p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <FinalCta
+    source={`${path.slug}-closing`}
+    financing={path.slug}
+    title={`Move your ${isHotel ? "hotel project" : "next retail opportunity"} forward.`}
+    description="Share the opportunity with Bridge and see whether there is a financing path."
+  />
+</BaseLayout>
+
+<style>
+  .solutions {
+    background: var(--ivory-50);
+  }
+
+  .solutions__grid {
+    display: grid;
+    margin-top: 3rem;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+
+  .solutions article {
+    border: var(--border-hairline);
+    border-radius: var(--radius-md);
+    padding: 2rem;
+    background: var(--white);
+  }
+
+  .solutions article > span {
+    color: var(--blue-700);
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+  }
+
+  .solutions h3 {
+    margin: 2.5rem 0 0.75rem;
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    line-height: 1.05;
+  }
+
+  .solutions article p {
+    margin: 0;
+    color: var(--slate-600);
+  }
+
+  .eligibility {
+    background: var(--navy-950);
+    color: var(--white);
+  }
+
+  .eligibility__grid,
+  .faq__grid {
+    display: grid;
+    align-items: start;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(3rem, 8vw, 8rem);
+  }
+
+  .eligibility ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .eligibility li {
+    position: relative;
+    border-bottom: 1px solid var(--inverse-16);
+    padding: 1.25rem 0 1.25rem 2rem;
+  }
+
+  .eligibility li::before {
+    position: absolute;
+    top: 1.55rem;
+    left: 0;
+    color: var(--gold-500);
+    content: "✓";
+  }
+
+  .related-results {
+    background: var(--white);
+  }
+
+  .faq {
+    border-top: var(--border-hairline);
+  }
+
+  .faq details {
+    border-bottom: var(--border-hairline);
+    padding-block: 1.25rem;
+  }
+
+  .faq summary {
+    cursor: pointer;
+    font-weight: 700;
+  }
+
+  .faq details p {
+    margin: 1rem 0 0;
+    color: var(--slate-600);
+  }
+
+  @media (max-width: 48rem) {
+    .solutions__grid,
+    .eligibility__grid,
+    .faq__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

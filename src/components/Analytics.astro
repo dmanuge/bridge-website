@@ -1,0 +1,34 @@
+---
+const analyticsId = import.meta.env.PUBLIC_ANALYTICS_ID;
+---
+
+<script is:inline define:vars={{ analyticsId }}>
+  (() => {
+    if (!analyticsId) return;
+    const consentKey = "bridge_analytics_consent";
+    const consent = localStorage.getItem(consentKey);
+    const respectDnt = navigator.doNotTrack === "1";
+    if (consent !== "granted" || respectDnt) return;
+
+    window.bridgeAnalytics = {
+      track(name, detail = {}) {
+        window.dispatchEvent(
+          new CustomEvent("bridge:analytics", {
+            detail: { id: analyticsId, name, ...detail },
+          }),
+        );
+      },
+    };
+
+    document.addEventListener("click", (event) => {
+      const target = event.target.closest("[data-analytics]");
+      if (target) {
+        window.bridgeAnalytics.track(target.dataset.analytics, {
+          label:
+            target.dataset.analyticsLabel ||
+            target.textContent.trim().slice(0, 80),
+        });
+      }
+    });
+  })();
+</script>

@@ -1,0 +1,50 @@
+---
+import { basename, extname } from "node:path";
+
+interface Props {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+  class?: string;
+  sizes?: string;
+  loading?: "eager" | "lazy";
+  fetchpriority?: "high" | "low" | "auto";
+  style?: string;
+}
+
+const {
+  src,
+  alt,
+  width,
+  height,
+  class: className,
+  sizes = "100vw",
+  loading = "lazy",
+  fetchpriority = "auto",
+  style,
+} = Astro.props;
+const name = basename(src, extname(src));
+const widths = [480, 800, 1200, 1600].filter((candidate) => candidate <= width);
+if (!widths.includes(width)) widths.push(width);
+const srcset = (format: "avif" | "webp") =>
+  widths
+    .map(
+      (candidate) => `/generated/${name}-${candidate}.${format} ${candidate}w`,
+    )
+    .join(", ");
+---
+
+<picture class={className} style={style}>
+  <source type="image/avif" srcset={srcset("avif")} sizes={sizes} />
+  <source type="image/webp" srcset={srcset("webp")} sizes={sizes} />
+  <img
+    src={src}
+    alt={alt}
+    width={width}
+    height={height}
+    loading={loading}
+    fetchpriority={fetchpriority}
+    decoding="async"
+  />
+</picture>

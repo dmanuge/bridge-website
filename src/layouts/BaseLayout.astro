@@ -1,0 +1,114 @@
+---
+import Analytics from "@/components/Analytics.astro";
+import SiteFooter from "@/components/SiteFooter.astro";
+import SiteHeader from "@/components/SiteHeader.astro";
+import { siteSettings } from "@/data/site";
+import { siteUrl } from "@/lib/site";
+import "@/styles/global.css";
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  noindex?: boolean;
+  schema?: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const {
+  title,
+  description,
+  image = "/images/brand/hotel-construction-sunrise.png",
+  noindex = false,
+  schema,
+} = Astro.props;
+const canonical = new URL(Astro.url.pathname, siteUrl).toString();
+const socialImage = new URL(image, siteUrl).toString();
+const fullTitle = title === "Bridge" ? title : `${title} | Bridge`;
+const organization = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: siteSettings.companyName,
+  legalName: siteSettings.legalName,
+  url: siteUrl,
+  logo: new URL("/logos/bridge-logo-navy.png", siteUrl).toString(),
+  email: siteSettings.supportEmail,
+};
+const schemas = [
+  organization,
+  ...(schema ? (Array.isArray(schema) ? schema : [schema]) : []),
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="theme-color" content="#04112A" />
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <link rel="canonical" href={canonical} />
+    <link
+      rel="preload"
+      href="/fonts/dm-sans-latin-variable.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="icon" href="/logos/bridge-arch-navy.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Bridge" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={socialImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImage} />
+    <title>{fullTitle}</title>
+    {
+      schemas.map((item) => (
+        <script
+          is:inline
+          type="application/ld+json"
+          set:html={JSON.stringify(item)}
+        />
+      ))
+    }
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <SiteHeader />
+    <main id="main-content">
+      <slot />
+    </main>
+    <SiteFooter />
+    <Analytics />
+  </body>
+</html>
+
+<style is:global>
+  .skip-link {
+    position: fixed;
+    z-index: 100;
+    top: 0.75rem;
+    left: 0.75rem;
+    padding: 0.7rem 1rem;
+    background: var(--white);
+    color: var(--navy-950);
+    font-weight: 700;
+    transform: translateY(-150%);
+  }
+
+  .skip-link:focus {
+    transform: translateY(0);
+  }
+
+  @media (max-width: 56.25rem) {
+    body {
+      --gutter: 1.25rem;
+      --section-space-compact: clamp(3rem, 8vw, 4rem);
+    }
+  }
+</style>

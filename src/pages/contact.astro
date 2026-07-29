@@ -1,0 +1,242 @@
+---
+import { siteSettings } from "@/data/site";
+import Action from "@/components/Action.astro";
+import PageHero from "@/components/PageHero.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Contact"
+  description="Contact the Bridge team about partnerships, support, press, or general business questions."
+>
+  <PageHero
+    eyebrow="Contact Bridge"
+    title="Let’s talk."
+    description="Use this form for partnerships, press, support, and general business questions. Financing requests should use the secure application."
+  />
+  <section class="contact section">
+    <div class="container contact__grid">
+      <div class="contact__details">
+        <p>
+          <strong>Email</strong><br /><a
+            href={`mailto:${siteSettings.supportEmail}`}
+            >{siteSettings.supportEmail}</a
+          >
+        </p>
+        <p><strong>Office</strong><br />{siteSettings.address}</p>
+      </div>
+
+      <form id="contact-form" action="/api/contact" method="post" novalidate>
+        <div class="form-field">
+          <label for="name">Name</label>
+          <input
+            id="name"
+            name="name"
+            type="text"
+            autocomplete="name"
+            required
+            maxlength="100"
+          />
+        </div>
+        <div class="form-field">
+          <label for="email">Business email</label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            autocomplete="email"
+            required
+            maxlength="160"
+          />
+        </div>
+        <div class="form-field">
+          <label for="company">Company</label>
+          <input
+            id="company"
+            name="company"
+            type="text"
+            autocomplete="organization"
+            maxlength="140"
+          />
+        </div>
+        <div class="form-field">
+          <label for="reason">Reason for contacting us</label>
+          <select id="reason" name="reason" required>
+            <option value="">Choose one</option>
+            <option value="support">Customer support</option>
+            <option value="partnership">Partnership</option>
+            <option value="press">Press</option>
+            <option value="general">General question</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label for="message">Message</label>
+          <textarea
+            id="message"
+            name="message"
+            required
+            minlength="10"
+            maxlength="2000"
+            rows="6"></textarea>
+          <small
+            >Do not include Social Security numbers, bank details, or other
+            sensitive information.</small
+          >
+        </div>
+        <div class="honeypot" aria-hidden="true">
+          <label for="website">Website</label>
+          <input
+            id="website"
+            name="website"
+            type="text"
+            tabindex="-1"
+            autocomplete="off"
+          />
+        </div>
+        <label class="consent">
+          <input name="consent" type="checkbox" value="yes" required />
+          <span
+            >I agree that Bridge may use this information to respond to my
+            inquiry.</span
+          >
+        </label>
+        <Action type="submit" arrow>Send message</Action>
+        <p
+          id="form-status"
+          class="form-status"
+          role="status"
+          aria-live="polite"
+        >
+        </p>
+      </form>
+    </div>
+  </section>
+
+  <script>
+    const form = document.querySelector<HTMLFormElement>("#contact-form");
+    const status = document.querySelector<HTMLElement>("#form-status");
+
+    form?.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (!form.reportValidity() || !status) return;
+
+      const button = form.querySelector<HTMLButtonElement>(
+        "button[type='submit']",
+      );
+      if (button) button.disabled = true;
+      status.textContent = "Sending…";
+
+      try {
+        const response = await fetch(form.action, {
+          method: "POST",
+          body: new FormData(form),
+          headers: { Accept: "application/json" },
+        });
+        if (!response.ok) throw new Error("Submission failed");
+        form.reset();
+        status.textContent = "Thanks. Your message has been sent.";
+      } catch {
+        status.textContent =
+          "We couldn’t send your message. Please try again or email support@bridgemarketplace.com.";
+      } finally {
+        if (button) button.disabled = false;
+      }
+    });
+  </script>
+</BaseLayout>
+
+<style>
+  .contact__grid {
+    display: grid;
+    align-items: start;
+    grid-template-columns: 0.65fr 1.35fr;
+    gap: clamp(3rem, 9vw, 9rem);
+  }
+
+  .contact__details {
+    display: grid;
+    border-top: 1px solid var(--line-200);
+    padding-top: 1.5rem;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .contact__details p {
+    margin: 0;
+    color: var(--slate-600);
+  }
+
+  .contact__details strong {
+    color: var(--ink-900);
+  }
+
+  form {
+    display: grid;
+    border: var(--border-hairline);
+    border-radius: var(--radius-md);
+    padding: clamp(1.5rem, 5vw, 3rem);
+    background: var(--white);
+    gap: 1.25rem;
+  }
+
+  .form-field {
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  label {
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+
+  input,
+  select,
+  textarea {
+    width: 100%;
+    border: var(--border-hairline);
+    border-radius: var(--radius-sm);
+    padding: 0.8rem 0.9rem;
+    background: var(--ivory-50);
+    color: var(--ink-900);
+  }
+
+  input:focus,
+  select:focus,
+  textarea:focus {
+    border-color: var(--blue-700);
+  }
+
+  small {
+    color: var(--slate-600);
+  }
+
+  .consent {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.7rem;
+  }
+
+  .consent input {
+    width: 1.1rem;
+    height: 1.1rem;
+    margin-top: 0.2rem;
+  }
+
+  .honeypot {
+    position: absolute;
+    left: -10000px;
+  }
+
+  .form-status {
+    min-height: 1.5rem;
+    margin: 0;
+    color: var(--slate-600);
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 48rem) {
+    .contact__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

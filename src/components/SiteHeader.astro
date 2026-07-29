@@ -1,0 +1,229 @@
+---
+import Action from "@/components/Action.astro";
+import { applicationHref } from "@/lib/site";
+const pathname = Astro.url.pathname;
+const nav = [
+  { href: "/hotel-financing", label: "Hotel Financing" },
+  { href: "/consumer-brands", label: "Consumer Brands" },
+  { href: "/success-stories", label: "Success Stories" },
+  { href: "/how-it-works", label: "How It Works" },
+  { href: "/about", label: "About" },
+];
+const isCurrent = (href: string) =>
+  pathname === href || pathname.startsWith(`${href}/`);
+---
+
+<header class="header" data-scrolled="false">
+  <div class="header__inner">
+    <a class="wordmark" href="/" aria-label="Bridge home">
+      <img
+        src="/logos/bridge-logo-white.png"
+        alt="Bridge"
+        width="142"
+        height="38"
+      />
+    </a>
+
+    <nav class="desktop-nav" aria-label="Main navigation">
+      {
+        nav.map((item) => (
+          <a
+            href={item.href}
+            aria-current={isCurrent(item.href) ? "page" : undefined}
+          >
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="header__cta">
+      <Action
+        href={applicationHref("header")}
+        variant="light"
+        analytics="application_exit"
+      >
+        Get Started
+      </Action>
+    </div>
+
+    <details class="mobile-nav">
+      <summary aria-label="Open navigation">
+        <span></span><span></span><span></span>
+      </summary>
+      <nav aria-label="Mobile navigation">
+        {
+          nav.map((item) => (
+            <a
+              href={item.href}
+              aria-current={isCurrent(item.href) ? "page" : undefined}
+            >
+              {item.label}
+            </a>
+          ))
+        }
+        <a href="/contact">Contact</a>
+        <Action href={applicationHref("mobile-menu")} variant="light"
+          >Get Started</Action
+        >
+      </nav>
+    </details>
+  </div>
+</header>
+
+<script>
+  const header = document.querySelector<HTMLElement>(".header");
+  let frame = 0;
+
+  const updateHeader = () => {
+    header?.setAttribute("data-scrolled", String(window.scrollY > 24));
+    frame = 0;
+  };
+
+  const requestHeaderUpdate = () => {
+    if (!frame) frame = window.requestAnimationFrame(updateHeader);
+  };
+
+  updateHeader();
+  window.addEventListener("scroll", requestHeaderUpdate, { passive: true });
+</script>
+
+<style>
+  .header {
+    position: fixed;
+    z-index: 20;
+    top: 0;
+    right: 0;
+    left: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+    transition:
+      background-color 180ms ease,
+      box-shadow 180ms ease;
+  }
+
+  .header[data-scrolled="true"] {
+    background: var(--navy-900);
+    box-shadow: 0 0.5rem 1.5rem var(--navy-shadow-strong);
+    backdrop-filter: blur(0.75rem);
+  }
+
+  .header__inner {
+    width: 100%;
+    max-width: none;
+    min-height: 5.25rem;
+    padding-inline: clamp(1.375rem, 3vw, 2.75rem);
+    display: grid;
+    align-items: center;
+    margin-inline: auto;
+    grid-template-columns: auto 1fr auto;
+    gap: clamp(1.5rem, 3vw, 3rem);
+  }
+
+  .wordmark {
+    display: inline-flex;
+  }
+
+  .wordmark img {
+    width: 9rem;
+    height: auto;
+    transform: translateX(-0.375rem);
+  }
+
+  .desktop-nav {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: clamp(1rem, 2vw, 2rem);
+  }
+
+  .desktop-nav a {
+    color: var(--inverse-82);
+    font-size: 0.78125rem;
+    font-weight: 520;
+    text-decoration: none;
+  }
+
+  .desktop-nav a:hover,
+  .desktop-nav a[aria-current="page"] {
+    color: var(--white);
+  }
+
+  .header__cta :global(.button) {
+    min-height: auto;
+    padding: 0.45rem 0.8rem;
+    background: var(--white);
+    color: var(--navy-950);
+    font-size: 0.71875rem;
+  }
+
+  .mobile-nav {
+    display: none;
+  }
+
+  .mobile-nav summary {
+    display: grid;
+    width: 2.75rem;
+    height: 2.75rem;
+    cursor: pointer;
+    list-style: none;
+    place-content: center;
+    gap: 0.3rem;
+  }
+
+  .mobile-nav summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .mobile-nav summary span {
+    width: 1.4rem;
+    height: 2px;
+    background: var(--white);
+  }
+
+  .mobile-nav nav {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    left: 0;
+    display: grid;
+    border-block: 1px solid var(--inverse-18);
+    padding: 1.5rem var(--gutter) 2rem;
+    background: var(--surface-brand);
+    color: var(--text-inverse);
+    box-shadow: var(--shadow);
+    gap: 0.25rem;
+  }
+
+  .mobile-nav nav > a:not(.button) {
+    padding-block: 0.8rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .mobile-nav .button {
+    margin-top: 1rem;
+  }
+
+  @media (max-width: 68rem) {
+    .header__inner {
+      grid-template-columns: 1fr auto;
+    }
+
+    .desktop-nav,
+    .header__cta {
+      display: none;
+    }
+
+    .mobile-nav {
+      display: block;
+    }
+
+    .mobile-nav .button {
+      background: var(--white);
+      color: var(--navy-950);
+    }
+  }
+</style>

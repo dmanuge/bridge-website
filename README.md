@@ -1,4 +1,40 @@
-# Bridge — Home Page Design Experiments
+# Bridge — Production Site and Design Experiments
+
+The production website is an Astro application based on the V10 “Two Doors” direction. The
+original concepts remain in `concepts/` and the A/B comparison remains available in `compare.html`
+as non-production design reference.
+
+## Production development
+
+Requires Node.js 20.11 or newer.
+
+```bash
+npm install
+npm run images
+npm run dev
+```
+
+The application routes live in `src/pages`, reusable components in `src/components`, and typed
+financing and customer-story content in `src/data/site.ts`.
+
+Copy `.env.example` to `.env` for local integration settings. `PUBLIC_APPLICATION_URL` controls all
+financing CTAs. `CONTACT_DELIVERY_ENDPOINT` and `CONTACT_DELIVERY_SECRET` configure the protected
+general-contact relay; financing details must continue through the secure Bridge application.
+
+Before release:
+
+```bash
+npm run format:check
+npm run check
+npm test
+npm run build
+npm run test:e2e
+```
+
+The browser suite requires Playwright Chromium and its operating-system dependencies. CI installs
+them automatically.
+
+## Design experiments
 
 Creative concepts for the new Bridge homepage. The viewer at `index.html` lets you flip through every concept (V1, V2, V3, ...) with left/right arrows that stay on top of the designs. Keyboard arrow keys work too, and `#v3` in the URL deep-links to a specific version.
 
@@ -32,19 +68,19 @@ Your concept becomes the next V number automatically. Please keep copy within th
 
 ## Current concepts
 
-| Version | Title | Idea |
-| --- | --- | --- |
-| V1 | Funded Object | Rotating funded closings as the homepage centerpiece |
-| V2 | Milestone | Path-gated type composition with staged reveal and hover scenes |
-| V3 | Funded Object Frame | Rotating wins beside a still headline (1280 frame) |
-| V4 | Proof Index | The ledger of real financings, up front |
-| V5 | Milestone Line | Opportunity to funded, in three steps |
-| V6 | Two Doors Frame | Hotel and consumer brand, side by side |
-| V7 | Financing Concierge | Pick what you're financing; the proof follows (interactive) |
-| V8 | Customer Documentary | One customer, one outcome, full frame |
-| V9 | Funded Object Full Build | Full-scroll V1: hero deal, stat band, successes ledger, milestones, customer story, chips |
-| V10 | Two Doors Full Build | Full-scroll V6: split doors hero with recent financings, shared proof system below |
-| V11 | Funded Object Stack | V1 hero + partner logos → Concierge → How It Works video → Documentary → Milestone Line |
+| Version | Title                    | Idea                                                                                      |
+| ------- | ------------------------ | ----------------------------------------------------------------------------------------- |
+| V1      | Funded Object            | Rotating funded closings as the homepage centerpiece                                      |
+| V2      | Milestone                | Path-gated type composition with staged reveal and hover scenes                           |
+| V3      | Funded Object Frame      | Rotating wins beside a still headline (1280 frame)                                        |
+| V4      | Proof Index              | The ledger of real financings, up front                                                   |
+| V5      | Milestone Line           | Opportunity to funded, in three steps                                                     |
+| V6      | Two Doors Frame          | Hotel and consumer brand, side by side                                                    |
+| V7      | Financing Concierge      | Pick what you're financing; the proof follows (interactive)                               |
+| V8      | Customer Documentary     | One customer, one outcome, full frame                                                     |
+| V9      | Funded Object Full Build | Full-scroll V1: hero deal, stat band, successes ledger, milestones, customer story, chips |
+| V10     | Two Doors Full Build     | Full-scroll V6: split doors hero with recent financings, shared proof system below        |
+| V11     | Funded Object Stack      | V1 hero + partner logos → Concierge → How It Works video → Documentary → Milestone Line   |
 
 ## Explorations
 

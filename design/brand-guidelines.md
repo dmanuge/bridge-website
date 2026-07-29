@@ -1,106 +1,93 @@
-# BRIDGE visual brand guidelines
+# Bridge production brand guidelines
 
-## Source and confidence
-These guidelines are visually extracted from the supplied six-concept raster board. They are a practical reconstruction, not an official brand-standard document. Exact font files cannot be recovered from a flattened image; the font recommendations below are close visual matches.
+## Source of truth
+
+The production Two Doors homepage is the visual authority for Bridge. The
+canonical, machine-checked implementation tokens live in
+`src/styles/tokens.css`; this document explains how to use them.
+
+The files at the repository root and under `concepts/` and `explorations/` are
+design references, not production pages, and may intentionally use different
+systems.
 
 ## Brand character
-**Editorial, assured, premium, and pragmatic.** The system combines institutional financial credibility with warm, documentary hospitality and founder imagery. The interface should feel calm, spacious, and specific rather than flashy or overtly “fintech.”
 
-## Logo / wordmark
-- Uppercase wordmark: **BRIDGE**
-- Neutral grotesk sans serif, medium to semibold weight
-- Tracking: approximately **0.12–0.16em**
-- Use deep navy on light backgrounds and white on dark/photo backgrounds
-- Keep clear space around the mark equal to at least the cap height of the “B”
+Bridge is editorial, assured, premium, and pragmatic. Use documentary imagery,
+strict alignment, compact functional typography, and generous whitespace.
+Interfaces should feel calm and specific rather than decorative or overtly
+“fintech.”
 
 ## Typography
-### Selected type families
-- **Display serif:** Source Serif 4 gives hero headings, section titles, financial figures, and quotations an assured editorial voice. Georgia and Times New Roman are fallbacks.
-- **Sans serif:** DM Sans keeps navigation, controls, labels, body copy, and functional headings clear and contemporary. Helvetica Neue and Arial are fallbacks.
 
-### Usage
-- Hero H1: 56–72 px desktop, 0.96–1.05 line-height, medium/semibold
-- Section H2: 36–48 px, 1.0–1.1 line-height
-- Card title: 24–32 px sans, semibold
-- Large amount: 28–40 px serif
-- Body: 15–17 px sans, 1.45–1.6 line-height
-- Navigation / labels: 11–13 px sans, medium, restrained tracking
-- Captions / metadata: 11–12 px sans
-- Large proof-point numerals use the display serif; explanatory labels use the sans serif
+- Display: Source Serif 4 for page and section titles, financial figures, and
+  quotations.
+- Sans: DM Sans for body copy, navigation, labels, controls, and card titles.
+- Use the shared `.display`, `.section-title`, `.eyebrow`, `.lede`, and
+  `.disclosure` styles or the `PageHero` and `SectionHeading` components.
+- Never declare a font family in a page or feature component.
+- Keep body copy at 15–17px with a 1.45–1.6 line height. Labels use compact,
+  tracked uppercase DM Sans. Do not use the display serif for functional UI.
 
-## Core color palette
-Colors below are sampled or reconstructed from the supplied board.
+## Color
 
-| Token | Hex | Use |
-|---|---:|---|
-| Deep Navy | **#04112A** | Primary dark surfaces, footers, photo overlays |
-| Royal Blue | **#143B85** | Active state, primary action, progress indicator |
-| Warm Ivory | **#F9F7F4** | Main page background |
-| Pure White | **#FFFFFF** | Cards, reversed text, secondary buttons |
-| Ink | **#10131C** | Primary text on light backgrounds |
-| Slate | **#535760** | Secondary text and metadata |
-| Stone | **#EEEAE5** | Soft panels and card fills |
-| Hairline | **#D9D8D5** | Dividers, borders, inactive controls |
-| Gold Accent | **#C9A24E** | Premium details, active milestones, status indicators, and fine rules |
+Use semantic custom properties from `src/styles/tokens.css`, not literal color
+values.
 
-### Color behavior
-- Favor navy, ivory, and white as the dominant triad.
-- Use royal blue for interaction and emphasis, not as a large decorative field.
-- Keep gold to small premium details; do not use it as a large field or for body text.
-- Dark photo sections should use a navy-to-transparent overlay so white text remains readable.
+| Role | Token | Typical use |
+|---|---|---|
+| Page surface | `--surface-page` | Main ivory background |
+| Raised surface | `--surface-raised` | Cards and controls |
+| Soft surface | `--surface-soft` | Quiet section bands |
+| Brand surface | `--surface-brand` | Dark proof, story, and footer areas |
+| Action surface | `--surface-action` | Header and primary actions |
+| Primary text | `--text-primary` | Main copy on light surfaces |
+| Secondary text | `--text-secondary` | Supporting copy and metadata |
+| Inverse text | `--text-inverse` | Primary copy on dark or image surfaces |
+| Inverse muted | `--text-inverse-muted` | Dark-surface labels and metadata |
+| Border | `--border-default` | Hairlines and cards |
+| Focus | `--focus-ring` | Keyboard focus |
 
-## Layout and spacing
-- Desktop content width: approximately **1200–1280 px**
-- Grid: **12 columns**, 24–32 px gutters
-- Spacing system: **8 px base unit**
-- Major section spacing: 72–120 px
-- Card padding: 24–32 px
-- Generous white space is a core part of the identity
-- Alignment is strict and mostly left-led; centered alignment is reserved for proof points or milestone nodes
+Royal blue is the production header and primary-action color. Navy anchors
+proof, documentary, and footer surfaces. Gold is reserved for fine rules,
+milestones, and status details. Image text always uses a named navy overlay.
 
-## Components
-### Buttons
-- Primary: deep navy or royal blue fill, white label, right arrow
-- Secondary: white/ivory fill, 1 px navy border, navy label
-- Text link: no container, navy label with right arrow
-- Radius: **6–8 px**
-- Height: approximately 44–48 px desktop
+## Layout and components
 
-### Cards and tables
-- Fine 1 px hairline borders
-- White or stone backgrounds
-- Minimal shadow; rely on border and tonal separation
-- Table rows use compact spacing, clear numeric alignment, and thumbnail imagery
-- Status labels remain plain-language and low-drama
+- Use `BaseLayout` for every user-facing route.
+- Use `PageHero` for standard solid or image-backed page introductions.
+- Use `SectionHeading` for every major section introduction.
+- Use `Action` for links and buttons; choose `primary`, `light`, `outline`, or
+  `text`.
+- Use `ResponsiveImage` for production content imagery.
+- Use the shared `surface-card` class for the base card border, radius, and
+  background, adding only layout-specific styles locally.
+- Reuse `ProofBand`, `ProcessSteps`, `ResultsLedger`, and `FinalCta`; do not
+  reproduce them in page files.
+- Use `--gutter`, `--container`, `--section-space`, and
+  `--section-space-compact` for page rhythm.
+- The standard radius is 8px; controls may use the 6px small radius. Shadows
+  are exceptional and use `--shadow`.
 
-### Progress / milestone UI
-- Thin horizontal rule
-- Circular nodes with simple line icons
-- Active node uses royal blue; inactive nodes stay white/ivory with gray borders
-- Labels are uppercase or semibold sans serif, with short explanatory text below
+The site header, navigation labels, mobile menu, footer, and “Get Started”
+language are identical on every route. The fixed header is transparent at the
+top of the page, then gains a deep-navy surface and subtle shadow after the user
+scrolls. Keep its “Get Started” action compact so navigation remains primary.
+Active navigation uses `aria-current`.
 
-## Imagery
-- Hospitality architecture at dusk or sunrise
-- Warm interior renovation details
-- Founders/operators in authentic work settings
-- Documentary composition, controlled contrast, muted saturation, warm practical lighting
-- Avoid generic corporate handshakes, overly bright stock photography, and glossy “tech” effects
-- For text overlays, preserve negative space and apply dark navy gradients rather than opaque black boxes
+## Responsive and accessible behavior
 
-## Iconography
-- Simple monoline icons
-- Approximately 1.5 px stroke at standard desktop scale
-- Rounded joins/caps, minimal detail
-- Icons support categories and process steps rather than decoration
+- Layouts collapse to one column before content becomes cramped; do not rely on
+  fixed content heights.
+- Touch targets are at least 44px. The complete navigation remains available
+  through the mobile menu.
+- Maintain at least 4.5:1 contrast for body text.
+- Preserve visible focus styles and reduced-motion behavior.
+- Do not place inverse text over photography without a named overlay token.
+- Status must always include a text label, not color alone.
 
-## Accessibility notes
-- Maintain at least 4.5:1 contrast for body text
-- Do not place small white text directly over a bright image without an overlay
-- Use text labels in addition to color for status
-- Keep focus states visible in royal blue with adequate offset
+## Adding a page
 
-## Recommended implementation fonts
-```css
-font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
-font-family: "DM Sans", "Helvetica Neue", Arial, sans-serif;
-```
+Start from `design/new-page-template.md`. A production page must use the shared
+layout and primitives, contain no raw colors or literal font families, and pass
+`npm run check:brand`. Add desktop and mobile browser coverage for any new page
+family.
