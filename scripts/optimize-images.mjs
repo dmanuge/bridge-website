@@ -6,6 +6,11 @@ import sharp from "sharp";
 const root = new URL("../", import.meta.url);
 const outputDir = new URL("../assets/generated/", import.meta.url);
 const images = [
+  "assets/images/two-doors/858ef286-b08c-4169-aeb2-55c1ee3b246e.png",
+  "assets/images/two-doors/a04e0f5f-047c-49c2-88c5-4b4333acdd1d.png",
+  "assets/images/two-doors/be69f9c1-7438-47e6-83c8-25ed034e13f0.png",
+  "assets/images/two-doors/1f8217b8-4668-4789-b359-dfe0461e6373.png",
+  "assets/images/two-doors/call_1svIn8t98wTq4Hha0anEes8i.png",
   "assets/images/two-doors/two-doors-crane.jpg",
   "assets/images/two-doors/two-doors-ware.jpg",
   "assets/images/two-doors/two-doors-hotel2.jpg",

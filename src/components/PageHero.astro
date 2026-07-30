@@ -9,11 +9,17 @@ interface HeroImage {
   position?: string;
 }
 
+interface HeroVideo {
+  src: string;
+  poster?: string;
+}
+
 interface Props {
   eyebrow: string;
   title: string;
   description?: string;
   image?: HeroImage;
+  video?: HeroVideo;
   variant?: "solid" | "image";
   class?: string;
 }
@@ -23,14 +29,33 @@ const {
   title,
   description,
   image,
-  variant = image ? "image" : "solid",
+  video,
+  variant = image || video ? "image" : "solid",
   class: className,
 } = Astro.props;
+const hasMedia = Boolean(image || video);
+const videoPoster = video?.poster ?? image?.src;
 ---
 
 <header class:list={["page-hero", `page-hero--${variant}`, className]}>
   {
-    image && (
+    video && (
+      <video
+        class="page-hero__video"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="metadata"
+        poster={videoPoster}
+        aria-hidden="true"
+      >
+        <source src={video.src} type="video/mp4" />
+      </video>
+    )
+  }
+  {
+    image && !video && (
       <ResponsiveImage
         class="page-hero__image"
         src={image.src}
@@ -43,7 +68,20 @@ const {
       />
     )
   }
-  {image && <div class="page-hero__overlay" />}
+  {
+    image && video && (
+      <ResponsiveImage
+        class="page-hero__image page-hero__image--fallback"
+        src={image.src}
+        alt={image.alt}
+        width={image.width ?? 1600}
+        height={image.height ?? 1000}
+        sizes="100vw"
+        style={`--hero-image-position: ${image.position ?? "center"}`}
+      />
+    )
+  }
+  {hasMedia && <div class="page-hero__overlay" />}
   <div class="container page-hero__content">
     <p class="eyebrow">{eyebrow}</p>
     <h1 class="display">{title}</h1>
@@ -69,6 +107,7 @@ const {
   }
 
   :global(.page-hero__image),
+  .page-hero__video,
   .page-hero__overlay {
     position: absolute;
     inset: 0;
@@ -76,14 +115,25 @@ const {
     height: 100%;
   }
 
-  :global(.page-hero__image img) {
+  :global(.page-hero__image img),
+  .page-hero__video {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: var(--hero-image-position);
+    object-position: var(--hero-image-position, center);
+  }
+
+  .page-hero__video {
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  :global(.page-hero__image--fallback) {
+    display: none;
   }
 
   .page-hero__overlay {
+    z-index: 1;
     background: linear-gradient(
       90deg,
       var(--navy-overlay-96) 0%,
@@ -92,8 +142,29 @@ const {
     );
   }
 
+  @media (max-width: 48rem) {
+    .page-hero--image .page-hero__overlay {
+      background: linear-gradient(
+        90deg,
+        var(--navy-overlay-94),
+        var(--navy-overlay-52)
+      );
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .page-hero__video {
+      display: none;
+    }
+
+    :global(.page-hero__image--fallback) {
+      display: block;
+    }
+  }
+
   .page-hero__content {
     position: relative;
+    z-index: 2;
     display: flex;
     min-height: inherit;
     align-items: flex-start;
@@ -127,15 +198,5 @@ const {
 
   .page-hero__actions:empty {
     display: none;
-  }
-
-  @media (max-width: 48rem) {
-    .page-hero--image .page-hero__overlay {
-      background: linear-gradient(
-        90deg,
-        var(--navy-overlay-94),
-        var(--navy-overlay-52)
-      );
-    }
   }
 </style>

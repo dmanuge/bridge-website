@@ -45,6 +45,8 @@ export interface FinancingPath {
   description: string;
   heroImage: string;
   heroAlt: string;
+  /** Optional looping background video for the financing page hero. */
+  heroVideo?: string;
   recentResult: FinancingResult;
   products: FinancingProduct[];
   eligibility: string[];
@@ -178,8 +180,10 @@ export const paths: FinancingPath[] = [
     eyebrow: "For owners and developers",
     description:
       "Direct lending for new construction and PIPs. Expert-led financing execution for acquisitions, refinancing, and other hotel needs.",
-    heroImage: "/images/brand/hotel-construction-sunrise.png",
-    heroAlt: "Hotel construction site at sunrise",
+    heroImage: "/images/two-doors/be69f9c1-7438-47e6-83c8-25ed034e13f0.png",
+    heroAlt: "Hotel financing opportunity",
+    heroVideo:
+      "/video/grok-video-86861376-b57b-44b7-bb97-193e06fbbe0f.mp4",
     recentResult: results[0]!,
     products: [
       {

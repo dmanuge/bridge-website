@@ -40,6 +40,11 @@ const relevantResults = results.filter((result) =>
     title={path.title}
     description={path.description}
     image={{ src: path.heroImage, alt: path.heroAlt }}
+    {...(path.heroVideo
+      ? {
+          video: { src: path.heroVideo, poster: path.heroImage },
+        }
+      : {})}
   >
     <Fragment slot="actions">
       <Action
