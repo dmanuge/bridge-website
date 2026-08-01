@@ -64,6 +64,17 @@
   --door-overlay-50: rgb(6 18 32 / 39.0625%);
   --door-overlay-90: rgb(6 18 32 / 70.3125%);
 
+  /* Door scrim: vertical base plus a wedge under the copy. Values are literal
+     alphas - these carry hero text contrast, so do not scale them. */
+  --door-wedge-90: rgb(6 18 32 / 90%);
+  --door-wedge-62: rgb(6 18 32 / 62%);
+  --door-wedge-20: rgb(6 18 32 / 20%);
+  --door-wedge-00: rgb(6 18 32 / 0%);
+  --door-base-66: rgb(6 18 32 / 66%);
+  --door-base-44: rgb(6 18 32 / 44%);
+  --door-base-26: rgb(6 18 32 / 26%);
+  --door-base-86: rgb(6 18 32 / 86%);
+
   /* Typography */
   --font-display:
     "Source Serif 4 Variable", "Source Serif 4", Georgia, "Times New Roman",

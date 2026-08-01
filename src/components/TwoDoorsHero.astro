@@ -1,5 +1,5 @@
 ---
-import { paths } from "@/data/site";
+import { paths, proofPoints } from "@/data/site";
 import ResponsiveImage from "@/components/ResponsiveImage.astro";
 
 const doorImages = [
@@ -13,17 +13,17 @@ const doorImages = [
   },
 ];
 const doorDescriptions = [
-  "Direct lending for new construction and PIPs. Expert-led financing execution for other hotel needs.",
-  "Direct financing for inventory, orders, receivables, working capital and acquisitions.",
+  "New construction, PIPs, and expert-led execution for every other hotel need.",
+  "Inventory, orders, receivables, working capital and acquisitions.",
 ];
 const recentFinancings = [
   {
-    category: "New Construction",
+    category: "New construction",
     result: "$75,000,000",
     role: "Bridge Direct Lending",
   },
   {
-    category: "Inventory Financing",
+    category: "Inventory financing",
     result: "$8,000,000",
     role: "Bridge Direct Lending",
   },
@@ -31,32 +31,48 @@ const recentFinancings = [
 ---
 
 <section class="two-doors" aria-labelledby="two-doors-title">
-  <h1 id="two-doors-title" class="sr-only">
-    Financing for hotel owners and consumer brands
-  </h1>
-  {
-    paths.map((path, index) => (
-      <article class="door">
-        <ResponsiveImage
-          class="door__image"
-          src={doorImages[index]!.src}
-          alt={doorImages[index]!.alt}
-          width={1600}
-          height={1067}
-          sizes="(max-width: 800px) 100vw, 50vw"
-          loading={index === 0 ? "eager" : "lazy"}
-          fetchpriority={index === 0 ? "high" : "auto"}
-        />
-        <div class="door__overlay" />
-        <div class="door__content">
-          <h2>{path.title}</h2>
-          <p class="door__description">{doorDescriptions[index]}</p>
-          <hr />
-          <div class="door__result">
-            <p class="door__label">Recent financing</p>
-            <p class="door__category">{recentFinancings[index]!.category}</p>
-            <p class="door__amount">{recentFinancings[index]!.result}</p>
-            <p class="door__role">{recentFinancings[index]!.role}</p>
+  <div class="two-doors__rail">
+    <h1 id="two-doors-title" class="two-doors__promise">
+      Financing for hotel owners and consumer brands.
+    </h1>
+    <dl class="two-doors__proof">
+      {
+        proofPoints.map((point) => (
+          <div class="two-doors__proof-item">
+            <dt>{point.value}</dt>
+            <dd>{point.label}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+
+  <div class="two-doors__grid">
+    {
+      paths.map((path, index) => (
+        <article class="door">
+          <ResponsiveImage
+            class="door__image"
+            src={doorImages[index]!.src}
+            alt={doorImages[index]!.alt}
+            width={1600}
+            height={1067}
+            sizes="(max-width: 800px) 100vw, 50vw"
+            loading={index === 0 ? "eager" : "lazy"}
+            fetchpriority={index === 0 ? "high" : "auto"}
+          />
+          <div class="door__overlay" />
+          <div class="door__content">
+            <h2>{path.title}</h2>
+            <p class="door__description">{doorDescriptions[index]}</p>
+            <div class="door__result">
+              <p class="door__label">Recent financing</p>
+              <p class="door__amount">{recentFinancings[index]!.result}</p>
+              <p class="door__meta">
+                {recentFinancings[index]!.category} &middot;{" "}
+                {recentFinancings[index]!.role}
+              </p>
+            </div>
             <a
               href={`/${path.slug}`}
               class="door__button"
@@ -64,22 +80,87 @@ const recentFinancings = [
               data-analytics="door_selection"
               data-analytics-label={path.slug}
             >
-              Explore {path.title} <span aria-hidden="true">→</span>
+              Explore {path.title} <span aria-hidden="true">&rarr;</span>
             </a>
           </div>
-        </div>
-      </article>
-    ))
-  }
+        </article>
+      ))
+    }
+  </div>
 </section>
 
 <style>
   .two-doors {
-    display: grid;
-    min-height: 43.125rem;
+    display: flex;
+    flex-direction: column;
     background: var(--navy-950);
+  }
+
+  /* Doors sit above the rail visually; the promise stays first in the DOM so the
+     page still reads h1 then h2s. */
+  .two-doors__grid {
+    display: grid;
+    min-height: 37.5rem;
     grid-template-columns: 1fr 1fr;
     gap: 0;
+    order: 1;
+  }
+
+  .two-doors__rail {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem var(--gutter);
+    background: var(--surface-brand);
+    color: var(--text-inverse);
+    column-gap: clamp(1.5rem, 4vw, 3.5rem);
+    order: 2;
+    row-gap: 1rem;
+  }
+
+  .two-doors__promise {
+    max-width: 26ch;
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.0625rem, 1.7vw, 1.375rem);
+    font-weight: 560;
+    letter-spacing: -0.008em;
+    line-height: 1.25;
+  }
+
+  .two-doors__proof {
+    display: flex;
+    margin: 0;
+    column-gap: clamp(1.25rem, 3vw, 2.75rem);
+    flex-wrap: wrap;
+    row-gap: 0.75rem;
+  }
+
+  .two-doors__proof-item {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+
+  .two-doors__proof dt {
+    font-family: var(--font-display);
+    font-size: 1.1875rem;
+    font-weight: 580;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .two-doors__proof dd {
+    max-width: 14ch;
+    margin: 0;
+    color: var(--text-inverse-muted);
+    font-size: var(--type-label);
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    line-height: 1.4;
+    text-transform: uppercase;
   }
 
   .door {
@@ -88,7 +169,7 @@ const recentFinancings = [
     overflow: hidden;
   }
 
-  /* No center divider — tapestry halves meet flush at the seam */
+  /* No center divider - tapestry halves meet flush at the seam */
   .door + .door {
     border-left: 0;
   }
@@ -112,7 +193,7 @@ const recentFinancings = [
     transition: transform 700ms cubic-bezier(0.2, 0.7, 0.2, 1);
   }
 
-  /* first-of-type / last-of-type: ignore the sr-only h1 sibling */
+  /* first-of-type / last-of-type: ignore any non-article siblings */
   .door:last-of-type :global(.door__image img) {
     /* Right door: keep the right edge of the photo in frame */
     object-position: right center;
@@ -124,118 +205,120 @@ const recentFinancings = [
     transform: scale(1.025);
   }
 
+  /* Two layers: a gentle vertical base, plus a wedge anchored under the copy.
+     The wedge protects the type while the upper right of the artwork stays lit. */
   .door__overlay {
-    background: linear-gradient(
-      180deg,
-      var(--door-overlay-50) 0%,
-      var(--door-overlay-42) 46%,
-      var(--door-overlay-90) 100%
-    );
+    background:
+      linear-gradient(
+        90deg,
+        var(--door-wedge-90) 0%,
+        var(--door-wedge-62) 30%,
+        var(--door-wedge-20) 58%,
+        var(--door-wedge-00) 78%
+      ),
+      linear-gradient(
+        180deg,
+        var(--door-base-66) 0%,
+        var(--door-base-26) 36%,
+        var(--door-base-44) 64%,
+        var(--door-base-86) 100%
+      );
   }
 
   .door__content {
     position: relative;
     z-index: 1;
     display: flex;
-    min-height: 43.125rem;
+    min-height: 37.5rem;
     flex-direction: column;
     justify-content: flex-end;
-    padding: 8.125rem clamp(1.375rem, 3vw, 2.75rem) 3.25rem;
+    padding: 8.125rem clamp(1.375rem, 3vw, 2.75rem) 3rem;
     color: var(--text-inverse);
   }
 
   .door__label,
-  .door__category,
-  .door__role {
+  .door__amount,
+  .door__meta {
     margin: 0;
   }
 
   .door h2 {
-    max-width: 12ch;
-    margin: 0 0 0.875rem;
-    font-size: clamp(2rem, 3.2vw, 3rem);
+    max-width: 14ch;
+    margin: 0 0 0.75rem;
+    font-size: clamp(1.75rem, 2.6vw, 2.5rem);
     font-weight: 560;
     letter-spacing: -0.012em;
     line-height: 1.08;
   }
 
   .door__description {
-    max-width: 38ch;
+    max-width: 36ch;
     margin: 0;
     color: var(--inverse-82);
-    font-size: 0.84375rem;
-    line-height: 1.65;
-  }
-
-  .door hr {
-    width: 7.5rem;
-    height: 1px;
-    border: 0;
-    margin: 1.375rem 0;
-    background: var(--gold-rule);
+    font-size: var(--type-body-small);
+    line-height: 1.62;
   }
 
   .door__result {
     max-width: 32rem;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--gold-rule);
   }
 
   .door__label {
-    color: var(--steel-light);
-    font-size: 0.625rem;
+    color: var(--text-inverse-muted);
+    font-size: var(--type-label);
     font-weight: 640;
     letter-spacing: 0.24em;
     text-transform: uppercase;
   }
 
-  .door__category {
-    margin-top: 0.3125rem;
-    font-size: 0.8125rem;
-    font-weight: 640;
-  }
-
   .door__amount {
-    margin: 0.375rem 0 0.5rem;
+    margin: 0.375rem 0 0.375rem;
     font-family: var(--font-display);
-    font-size: clamp(1.875rem, 3vw, 2.625rem);
+    font-size: clamp(1.75rem, 2.7vw, 2.375rem);
     font-weight: 580;
+    font-variant-numeric: tabular-nums;
     letter-spacing: -0.012em;
     line-height: 1.04;
   }
 
-  .door__role {
-    color: var(--steel-light);
-    font-size: 0.625rem;
-    font-weight: 680;
-    letter-spacing: 0.22em;
+  .door__meta {
+    color: var(--inverse-82);
+    font-size: var(--type-label);
+    font-weight: 640;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
   }
 
+  /* Primary action: solid, so the door CTA outranks the header button */
   .door__button {
     display: inline-flex;
     align-items: center;
     align-self: flex-start;
     gap: 0.625rem;
     min-height: 3rem;
-    border: 1px solid var(--inverse-55);
-    border-radius: 0.375rem;
-    margin-top: 1.375rem;
+    border: 1px solid var(--white);
+    border-radius: var(--radius-sm);
+    margin-top: 1.5rem;
     padding: 0.75rem 1.25rem;
-    color: var(--text-inverse);
-    font-size: 0.84375rem;
+    background: var(--white);
+    color: var(--navy-950);
+    font-size: var(--type-body-small);
     font-weight: 660;
     text-decoration: none;
     transition:
-      border-color 180ms ease,
-      background-color 180ms ease;
+      background-color 180ms ease,
+      color 180ms ease;
   }
 
   .door__button:hover {
-    border-color: var(--white);
-    background: var(--inverse-08);
+    background: var(--inverse-80);
   }
 
   @media (max-width: 56.25rem) {
-    .two-doors {
+    .two-doors__grid {
       grid-template-columns: 1fr;
     }
 
@@ -252,13 +335,26 @@ const recentFinancings = [
     }
 
     .door__content {
-      height: 33.75rem;
-      min-height: 33.75rem;
+      height: 31.25rem;
+      min-height: 31.25rem;
       padding-top: 6.875rem;
     }
 
     .door {
-      height: 33.75rem;
+      height: 31.25rem;
+    }
+
+    .two-doors__rail {
+      flex-direction: column;
+      align-items: flex-start;
+      padding-block: 1.75rem;
+    }
+
+    .two-doors__proof {
+      display: grid;
+      width: 100%;
+      grid-template-columns: 1fr 1fr;
+      row-gap: 1rem;
     }
   }
 </style>
