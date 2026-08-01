@@ -5,9 +5,9 @@ import { getPath } from "@/data/site";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 
 const hotel = getPath("hotel-financing");
-const heroVideo = hotel.heroVideo!;
-const heroImage = hotel.heroImage;
-const heroAlt = hotel.heroAlt;
+const heroImage = "/images/two-doors/3ae784ca-ec3e-4b88-ab0b-e22fecce574a.png";
+const heroVideo = "/video/generated_video_10s.mp4";
+const heroAlt = "Bricks to Brands";
 ---
 
 <BaseLayout
@@ -15,27 +15,32 @@ const heroAlt = hotel.heroAlt;
   description={hotel.description}
   image={heroImage}
 >
+  <link slot="head" rel="preload" href={heroVideo} as="video" type="video/mp4" />
   <header class="v2-hero">
+    {/* Still image shows immediately; video layers on top once it can play */}
+    <ResponsiveImage
+      class="v2-hero__image"
+      src={heroImage}
+      alt={heroAlt}
+      width={1600}
+      height={900}
+      sizes="100vw"
+      loading="eager"
+      fetchpriority="high"
+    />
     <video
       class="v2-hero__video"
+      src={heroVideo}
       autoplay
       muted
       loop
       playsinline
-      preload="metadata"
+      webkit-playsinline
+      preload="auto"
       poster={heroImage}
       aria-hidden="true"
-    >
-      <source src={heroVideo} type="video/mp4" />
-    </video>
-    <ResponsiveImage
-      class="v2-hero__fallback"
-      src={heroImage}
-      alt={heroAlt}
-      width={1600}
-      height={1000}
-      sizes="100vw"
-    />
+      data-v2-hero-video
+    ></video>
     <div class="v2-hero__overlay"></div>
     <div class="v2-hero__content">
       <h1>Bricks to Brands</h1>
@@ -45,11 +50,58 @@ const heroAlt = hotel.heroAlt;
   <HomepageContent />
 </BaseLayout>
 
+<script is:inline>
+  (function () {
+    const video = document.querySelector("[data-v2-hero-video]");
+    if (!video) return;
+
+    // Autoplay policies require these to be true before play().
+    video.muted = true;
+    video.defaultMuted = true;
+    video.playsInline = true;
+    video.setAttribute("playsinline", "");
+    video.setAttribute("webkit-playsinline", "");
+
+    const reveal = () => {
+      video.classList.add("is-ready");
+    };
+
+    const tryPlay = () => {
+      const playPromise = video.play();
+      if (playPromise && typeof playPromise.then === "function") {
+        playPromise.then(reveal).catch(function () {
+          /* keep poster/still until the browser allows playback */
+        });
+      }
+    };
+
+    video.addEventListener("loadeddata", reveal);
+    video.addEventListener("canplay", function () {
+      reveal();
+      tryPlay();
+    });
+    video.addEventListener("playing", reveal);
+
+    if (video.readyState >= 2) {
+      reveal();
+      tryPlay();
+    } else {
+      tryPlay();
+    }
+
+    // Resume if the browser pauses background media when the tab returns.
+    document.addEventListener("visibilitychange", function () {
+      if (!document.hidden) tryPlay();
+    });
+  })();
+</script>
+
 <style>
   .v2-hero {
     position: relative;
     display: flex;
     min-height: 100svh;
+    min-height: 100dvh;
     overflow: hidden;
     align-items: flex-end;
     justify-content: center;
@@ -57,34 +109,50 @@ const heroAlt = hotel.heroAlt;
     color: var(--text-inverse);
   }
 
+  /* Fill the full hero; :global needed because ResponsiveImage is a child component */
+  :global(.v2-hero__image),
+  :global(.v2-hero__image img),
   .v2-hero__video,
-  :global(.v2-hero__fallback),
   .v2-hero__overlay {
     position: absolute;
     inset: 0;
+    display: block;
     width: 100%;
     height: 100%;
+    min-width: 100%;
+    min-height: 100%;
   }
 
-  .v2-hero__video,
-  :global(.v2-hero__fallback img) {
-    width: 100%;
-    height: 100%;
+  :global(.v2-hero__image) {
+    z-index: 0;
+  }
+
+  :global(.v2-hero__image img) {
+    max-width: none;
+    max-height: none;
     object-fit: cover;
-    object-position: center;
+    object-position: center top;
   }
 
   .v2-hero__video {
-    z-index: 0;
+    z-index: 1;
+    max-width: none;
+    max-height: none;
+    object-fit: cover;
+    object-position: center top;
     pointer-events: none;
+    /* Stay hidden until a frame is available so the still is the default */
+    opacity: 0;
+    transition: opacity 350ms ease;
   }
 
-  :global(.v2-hero__fallback) {
-    display: none;
+  /* :global so dynamically added .is-ready is not blocked by Astro scoping */
+  :global(video.v2-hero__video.is-ready) {
+    opacity: 1;
   }
 
   .v2-hero__overlay {
-    z-index: 1;
+    z-index: 2;
     background: linear-gradient(
       180deg,
       var(--navy-overlay-12) 0%,
@@ -95,7 +163,7 @@ const heroAlt = hotel.heroAlt;
 
   .v2-hero__content {
     position: relative;
-    z-index: 2;
+    z-index: 3;
     width: 100%;
     max-width: 40rem;
     margin-inline: auto;
@@ -116,10 +184,6 @@ const heroAlt = hotel.heroAlt;
   @media (prefers-reduced-motion: reduce) {
     .v2-hero__video {
       display: none;
-    }
-
-    :global(.v2-hero__fallback) {
-      display: block;
     }
   }
 </style>

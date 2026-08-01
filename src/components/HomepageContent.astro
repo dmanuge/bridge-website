@@ -9,13 +9,17 @@ import ResponsiveImage from "@/components/ResponsiveImage.astro";
 import ResultsLedger from "@/components/ResultsLedger.astro";
 import { paths, results, stories } from "@/data/site";
 
-const featuredStory = stories[0]!;
-const processResult = results[1]!;
-const pathDescriptions = [
-  "Direct lending for new construction and PIPs. Expert-led financing execution for other hotel needs.",
-  "Direct financing for inventory, orders, receivables, working capital and acquisitions.",
-];
-const pathDoorImages = [
+interface PathDoorImage {
+  src: string;
+  alt: string;
+}
+
+interface Props {
+  /** Optional override for the two "What we finance" door images (left, right). */
+  pathDoorImages?: PathDoorImage[];
+}
+
+const defaultPathDoorImages: PathDoorImage[] = [
   {
     src: "/images/two-doors/1f8217b8-4668-4789-b359-dfe0461e6373.png",
     alt: "European hotel streetscape illustration",
@@ -24,6 +28,15 @@ const pathDoorImages = [
     src: "/images/two-doors/call_1svIn8t98wTq4Hha0anEes8i.png",
     alt: "Consumer brand operator packing boxes in a warehouse",
   },
+];
+
+const { pathDoorImages = defaultPathDoorImages } = Astro.props;
+
+const featuredStory = stories[0]!;
+const processResult = results[1]!;
+const pathDescriptions = [
+  "Direct lending for new construction and PIPs. Expert-led financing execution for other hotel needs.",
+  "Direct financing for inventory, orders, receivables, working capital and acquisitions.",
 ];
 const featuredQuote = featuredStory.quote.split(".")[0] + ".";
 ---

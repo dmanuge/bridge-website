@@ -180,10 +180,8 @@ export const paths: FinancingPath[] = [
     eyebrow: "For owners and developers",
     description:
       "Direct lending for new construction and PIPs. Expert-led financing execution for acquisitions, refinancing, and other hotel needs.",
-    heroImage: "/images/two-doors/be69f9c1-7438-47e6-83c8-25ed034e13f0.png",
+    heroImage: "/images/two-doors/1f8217b8-4668-4789-b359-dfe0461e6373.png",
     heroAlt: "Hotel financing opportunity",
-    heroVideo:
-      "/video/grok-video-86861376-b57b-44b7-bb97-193e06fbbe0f.mp4",
     recentResult: results[0]!,
     products: [
       {
@@ -232,8 +230,8 @@ export const paths: FinancingPath[] = [
     eyebrow: "For brands scaling into retail",
     description:
       "Direct financing for inventory, confirmed orders, receivables, working capital, and acquisitions—built around the realities of retail growth.",
-    heroImage: "/images/brand/consumer-brand-operations.png",
-    heroAlt: "Consumer brand operator in a product warehouse",
+    heroImage: "/images/two-doors/d48e5ee5-1662-4de3-8727-773851c125d8.png",
+    heroAlt: "Consumer brand financing opportunity",
     recentResult: results[3]!,
     products: [
       {

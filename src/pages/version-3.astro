@@ -1,0 +1,189 @@
+---
+import HomepageContent from "@/components/HomepageContent.astro";
+import ResponsiveImage from "@/components/ResponsiveImage.astro";
+import { getPath } from "@/data/site";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+const hotel = getPath("hotel-financing");
+const heroImage = "/images/two-doors/3ae784ca-ec3e-4b88-ab0b-e22fecce574a.png";
+const heroVideo = "/video/grok-video-86861376-b57b-44b7-bb97-193e06fbbe0f.web.mp4";
+const heroAlt = "Bricks to Brands";
+---
+
+<BaseLayout
+  title="Bricks to Brands"
+  description={hotel.description}
+  image={heroImage}
+>
+  <link slot="head" rel="preload" href={heroVideo} as="video" type="video/mp4" />
+  <header class="v3-hero">
+    {/* Still image shows immediately; video layers on top once it can play */}
+    <ResponsiveImage
+      class="v3-hero__image"
+      src={heroImage}
+      alt={heroAlt}
+      width={1600}
+      height={900}
+      sizes="100vw"
+      loading="eager"
+      fetchpriority="high"
+    />
+    <video
+      class="v3-hero__video"
+      src={heroVideo}
+      autoplay
+      muted
+      loop
+      playsinline
+      webkit-playsinline
+      preload="auto"
+      poster={heroImage}
+      aria-hidden="true"
+      data-v3-hero-video
+    ></video>
+    <div class="v3-hero__overlay"></div>
+    <div class="v3-hero__content">
+      <h1>Bricks to Brands</h1>
+    </div>
+  </header>
+
+  <HomepageContent />
+</BaseLayout>
+
+<script is:inline>
+  (function () {
+    const video = document.querySelector("[data-v3-hero-video]");
+    if (!video) return;
+
+    // Autoplay policies require these to be true before play().
+    video.muted = true;
+    video.defaultMuted = true;
+    video.playsInline = true;
+    video.setAttribute("playsinline", "");
+    video.setAttribute("webkit-playsinline", "");
+
+    const reveal = () => {
+      video.classList.add("is-ready");
+    };
+
+    const tryPlay = () => {
+      const playPromise = video.play();
+      if (playPromise && typeof playPromise.then === "function") {
+        playPromise.then(reveal).catch(function () {
+          /* keep poster/still until the browser allows playback */
+        });
+      }
+    };
+
+    video.addEventListener("loadeddata", reveal);
+    video.addEventListener("canplay", function () {
+      reveal();
+      tryPlay();
+    });
+    video.addEventListener("playing", reveal);
+
+    if (video.readyState >= 2) {
+      reveal();
+      tryPlay();
+    } else {
+      tryPlay();
+    }
+
+    // Resume if the browser pauses background media when the tab returns.
+    document.addEventListener("visibilitychange", function () {
+      if (!document.hidden) tryPlay();
+    });
+  })();
+</script>
+
+<style>
+  .v3-hero {
+    position: relative;
+    display: flex;
+    min-height: 100svh;
+    min-height: 100dvh;
+    overflow: hidden;
+    align-items: flex-end;
+    justify-content: center;
+    background: var(--surface-brand);
+    color: var(--text-inverse);
+  }
+
+  /* Fill the full hero; :global needed because ResponsiveImage is a child component */
+  :global(.v3-hero__image),
+  :global(.v3-hero__image img),
+  .v3-hero__video,
+  .v3-hero__overlay {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-width: 100%;
+    min-height: 100%;
+  }
+
+  :global(.v3-hero__image) {
+    z-index: 0;
+  }
+
+  :global(.v3-hero__image img) {
+    max-width: none;
+    max-height: none;
+    object-fit: cover;
+    object-position: center top;
+  }
+
+  .v3-hero__video {
+    z-index: 1;
+    max-width: none;
+    max-height: none;
+    object-fit: cover;
+    object-position: center top;
+    pointer-events: none;
+    /* Stay hidden until a frame is available so the still is the default */
+    opacity: 0;
+    transition: opacity 350ms ease;
+  }
+
+  /* :global so dynamically added .is-ready is not blocked by Astro scoping */
+  :global(video.v3-hero__video.is-ready) {
+    opacity: 1;
+  }
+
+  .v3-hero__overlay {
+    z-index: 2;
+    background: linear-gradient(
+      180deg,
+      var(--navy-overlay-12) 0%,
+      var(--navy-overlay-42) 48%,
+      var(--navy-overlay-90) 100%
+    );
+  }
+
+  .v3-hero__content {
+    position: relative;
+    z-index: 3;
+    width: 100%;
+    max-width: 40rem;
+    margin-inline: auto;
+    padding: 0 var(--gutter) clamp(2.5rem, 6vh, 4.5rem);
+    text-align: center;
+  }
+
+  .v3-hero__content h1 {
+    margin: 0;
+    color: var(--white);
+    font-family: var(--font-display);
+    font-size: clamp(1.375rem, 2.4vw, 1.875rem);
+    font-weight: 560;
+    letter-spacing: -0.012em;
+    line-height: 1.15;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .v3-hero__video {
+      display: none;
+    }
+  }
+</style>

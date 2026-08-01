@@ -50,19 +50,19 @@
   --gold-rule: rgb(201 162 78 / 72%);
   --navy-shadow: rgb(4 17 42 / 12%);
   --navy-shadow-strong: rgb(4 17 42 / 18%);
-  /* Overlay alphas are half their original values for lighter photos */
-  --navy-overlay-12: rgb(4 17 42 / 6%);
-  --navy-overlay-14: rgb(4 17 42 / 7%);
-  --navy-overlay-40: rgb(4 17 42 / 20%);
-  --navy-overlay-42: rgb(4 17 42 / 21%);
-  --navy-overlay-52: rgb(4 17 42 / 26%);
-  --navy-overlay-72: rgb(4 17 42 / 36%);
-  --navy-overlay-90: rgb(4 17 42 / 45%);
-  --navy-overlay-94: rgb(4 17 42 / 47%);
-  --navy-overlay-96: rgb(4 17 42 / 48%);
-  --door-overlay-42: rgb(6 18 32 / 21%);
-  --door-overlay-50: rgb(6 18 32 / 25%);
-  --door-overlay-90: rgb(6 18 32 / 45%);
+  /* Overlay alphas: original × 0.5, then × 1.25 twice */
+  --navy-overlay-12: rgb(4 17 42 / 9.375%);
+  --navy-overlay-14: rgb(4 17 42 / 10.9375%);
+  --navy-overlay-40: rgb(4 17 42 / 31.25%);
+  --navy-overlay-42: rgb(4 17 42 / 32.8125%);
+  --navy-overlay-52: rgb(4 17 42 / 40.625%);
+  --navy-overlay-72: rgb(4 17 42 / 56.25%);
+  --navy-overlay-90: rgb(4 17 42 / 70.3125%);
+  --navy-overlay-94: rgb(4 17 42 / 73.4375%);
+  --navy-overlay-96: rgb(4 17 42 / 75%);
+  --door-overlay-42: rgb(6 18 32 / 32.8125%);
+  --door-overlay-50: rgb(6 18 32 / 39.0625%);
+  --door-overlay-90: rgb(6 18 32 / 70.3125%);
 
   /* Typography */
   --font-display:
