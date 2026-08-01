@@ -26,7 +26,7 @@ const images = [
   "assets/images/two-doors/two-doors-box.jpg",
   "assets/images/brand/hotel-construction-sunrise.png",
   "assets/images/brand/consumer-brand-operations.png",
-  "assets/images/brand/customer-story-founder.png",
+  "assets/images/two-doors/c3594866-c5c8-4978-a189-dcab0bdae851.png",
   "assets/images/wins/groundbreaking.png",
   "assets/images/wins/hampton-refi.png",
   "assets/images/wins/comfort-suites.png",
