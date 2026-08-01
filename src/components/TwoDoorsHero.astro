@@ -110,16 +110,18 @@ const recentFinancings = [
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 1.5rem var(--gutter);
+    padding: 1.75rem var(--gutter);
+    border-top: 1px solid var(--inverse-line);
     background: var(--surface-brand);
     color: var(--text-inverse);
-    column-gap: clamp(1.5rem, 4vw, 3.5rem);
+    column-gap: clamp(1.5rem, 4vw, 4rem);
     order: 2;
-    row-gap: 1rem;
+    row-gap: 1.25rem;
   }
 
   .two-doors__promise {
-    max-width: 26ch;
+    max-width: 24ch;
+    flex: 0 0 auto;
     margin: 0;
     font-family: var(--font-display);
     font-size: clamp(1.0625rem, 1.7vw, 1.375rem);
@@ -128,18 +130,21 @@ const recentFinancings = [
     line-height: 1.25;
   }
 
+  /* Four even columns so the labels wrap on a shared rhythm instead of
+     ragging out beside their numbers. */
   .two-doors__proof {
-    display: flex;
+    display: grid;
+    min-width: 0;
     margin: 0;
-    column-gap: clamp(1.25rem, 3vw, 2.75rem);
-    flex-wrap: wrap;
-    row-gap: 0.75rem;
+    column-gap: clamp(1.25rem, 2.6vw, 2.5rem);
+    flex: 1 1 auto;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .two-doors__proof-item {
-    display: flex;
-    align-items: baseline;
-    gap: 0.5rem;
+    display: grid;
+    align-content: start;
+    gap: 0.375rem;
   }
 
   .two-doors__proof dt {
@@ -153,14 +158,24 @@ const recentFinancings = [
   }
 
   .two-doors__proof dd {
-    max-width: 14ch;
+    max-width: none;
     margin: 0;
     color: var(--text-inverse-muted);
     font-size: var(--type-label);
     font-weight: 600;
-    letter-spacing: 0.16em;
-    line-height: 1.4;
+    letter-spacing: 0.14em;
+    line-height: 1.5;
     text-transform: uppercase;
+  }
+
+  /* Wide desktop: size the stat columns to their content and spread them, so
+     every label sits on one line. Narrower screens keep even columns and let
+     the longest label wrap rather than overflow. */
+  @media (min-width: 77.5rem) {
+    .two-doors__proof {
+      justify-content: space-between;
+      grid-template-columns: repeat(4, max-content);
+    }
   }
 
   .door {
@@ -351,10 +366,9 @@ const recentFinancings = [
     }
 
     .two-doors__proof {
-      display: grid;
       width: 100%;
       grid-template-columns: 1fr 1fr;
-      row-gap: 1rem;
+      row-gap: 1.25rem;
     }
   }
 </style>
