@@ -4,11 +4,11 @@ import ResponsiveImage from "@/components/ResponsiveImage.astro";
 
 const doorImages = [
   {
-    src: "/images/two-doors/tapestry-hotel-left-half.png",
+    src: "/images/two-doors/f7ac3e21-bdf0-4528-a15e-f2ca14a0c3ef.png",
     alt: "Hotel financing opportunity",
   },
   {
-    src: "/images/two-doors/tapestry-retailer-right-half.png",
+    src: "/images/two-doors/08bc4260-b224-4358-86ae-04c150a2b660.png",
     alt: "Consumer brand financing opportunity",
   },
 ];
@@ -106,16 +106,17 @@ const recentFinancings = [
     height: 100%;
     max-width: none;
     object-fit: cover;
-    /* Pin left half at its top-right so it meets the right half’s top-left */
-    object-position: right top;
-    transform-origin: right top;
+    /* Left door: center the photo in the frame */
+    object-position: center center;
+    transform-origin: center center;
     transition: transform 700ms cubic-bezier(0.2, 0.7, 0.2, 1);
   }
 
   /* first-of-type / last-of-type: ignore the sr-only h1 sibling */
   .door:last-of-type :global(.door__image img) {
-    object-position: left top;
-    transform-origin: left top;
+    /* Right door: keep the right edge of the photo in frame */
+    object-position: right center;
+    transform-origin: right center;
   }
 
   .door:hover :global(.door__image img),

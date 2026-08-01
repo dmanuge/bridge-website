@@ -17,6 +17,7 @@ const images = [
   "assets/images/two-doors/tapestry-hotel-left-half.png",
   "assets/images/two-doors/tapestry-retailer-right-half.png",
   "assets/images/two-doors/d48e5ee5-1662-4de3-8727-773851c125d8.png",
+  "assets/images/two-doors/08bc4260-b224-4358-86ae-04c150a2b660.png",
   "assets/images/two-doors/two-doors-crane.jpg",
   "assets/images/two-doors/two-doors-ware.jpg",
   "assets/images/two-doors/two-doors-hotel2.jpg",
