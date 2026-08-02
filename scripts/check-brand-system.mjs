@@ -48,7 +48,13 @@ for (const file of files) {
 
   if (path.startsWith("src/pages/") && path.endsWith(".astro")) {
     const isApi = path.startsWith("src/pages/api/");
-    const delegatesToShell = /<(?:BaseLayout|FinancingPage)\b/.test(contents);
+    const delegatesToVersionPage =
+      /import\s+\w+\s+from\s+["']@\/pages\/version-[2-5]\.astro["']/.test(
+        contents,
+      );
+    const delegatesToShell =
+      /<(?:BaseLayout|FinancingPage)\b/.test(contents) ||
+      delegatesToVersionPage;
     if (!isApi && !delegatesToShell) {
       violations.push(`${path}: page does not use BaseLayout`);
     }

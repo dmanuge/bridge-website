@@ -1,0 +1,288 @@
+---
+import Action from "@/components/Action.astro";
+import HomepageContent from "@/components/HomepageContent.astro";
+import ResponsiveImage from "@/components/ResponsiveImage.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { applicationHref } from "@/lib/site";
+
+interface HomepageImage {
+  src: string;
+  alt: string;
+}
+
+interface Props {
+  heroImageOverride?: string;
+  heroAltOverride?: string;
+  imageOnly?: boolean;
+  pathDoorImages?: HomepageImage[];
+  processCardImage?: HomepageImage;
+  documentaryImage?: HomepageImage;
+}
+
+const {
+  heroImageOverride,
+  heroAltOverride,
+  imageOnly = false,
+  pathDoorImages,
+  processCardImage,
+  documentaryImage,
+} = Astro.props;
+const heroImage =
+  heroImageOverride ??
+  "/images/two-doors/3ae784ca-ec3e-4b88-ab0b-e22fecce574a.png";
+const heroVideo = imageOnly
+  ? undefined
+  : "/video/grok-video-86861376-b57b-44b7-bb97-193e06fbbe0f.web.mp4";
+const heroAlt =
+  heroAltOverride ??
+  "Golden-hour boulevard with a hotel tower on the left and retail storefronts on the right";
+---
+
+<BaseLayout
+  title="Financing for hotel owners and consumer brands"
+  description="Direct lending for hotel construction and PIPs. Direct financing for brands scaling into retail."
+  image={heroImage}
+  headerVariant="over-hero"
+>
+  <header class="v5-hero" data-hero data-v5-hero>
+    {/* Still image shows immediately; video layers on top once it can play */}
+    <ResponsiveImage
+      class="v5-hero__image"
+      src={heroImage}
+      alt={heroAlt}
+      width={1600}
+      height={900}
+      sizes="100vw"
+      loading="eager"
+      fetchpriority="high"
+    />
+    {
+      heroVideo && (
+        <video
+          class="v5-hero__video"
+          src={heroVideo}
+          autoplay
+          muted
+          loop
+          playsinline
+          webkit-playsinline
+          preload="metadata"
+          poster={heroImage}
+          aria-hidden="true"
+          data-hero-video
+          data-v5-hero-video
+        />
+      )
+    }
+    <div class="v5-hero__overlay"></div>
+    <div class="v5-hero__content">
+      <h1 class="v5-hero__title v5-rv">
+        Financing for hotel owners and consumer brands.
+      </h1>
+      <p class="v5-hero__sub v5-rv v5-d1">
+        Direct lending for hotel construction and PIPs. Direct financing for
+        brands scaling into retail.
+      </p>
+      <hr class="v5-hero__rule v5-rv v5-d1" />
+      <div class="v5-rv v5-d2">
+        <Action
+          href={applicationHref("v5-hero")}
+          variant="light"
+          analytics="application_exit"
+          arrow
+          class="v5-hero__cta"
+        >
+          Get Started
+        </Action>
+      </div>
+    </div>
+  </header>
+
+  <HomepageContent
+    pathDoorImages={pathDoorImages}
+    processCardImage={processCardImage}
+    documentaryImage={documentaryImage}
+  />
+</BaseLayout>
+
+<style>
+  .v5-hero {
+    position: relative;
+    display: flex;
+    /* Fixed transparent header overlays the hero, so it fills the viewport
+       and the content self-pads below the header, matching TwoDoorsHero. */
+    min-height: 100svh;
+    min-height: 100dvh;
+    overflow: hidden;
+    align-items: flex-end;
+    background: var(--surface-brand);
+    color: var(--text-inverse);
+  }
+
+  :global(.v5-hero__image),
+  :global(.v5-hero__image img),
+  .v5-hero__video,
+  .v5-hero__overlay {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-width: 100%;
+    min-height: 100%;
+  }
+
+  :global(.v5-hero__image) {
+    z-index: 0;
+  }
+
+  :global(.v5-hero__image img) {
+    max-width: none;
+    max-height: none;
+    object-fit: cover;
+    object-position: center top;
+  }
+
+  .v5-hero__video {
+    z-index: 1;
+    max-width: none;
+    max-height: none;
+    object-fit: cover;
+    object-position: center top;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 350ms ease;
+  }
+
+  :global(video.v5-hero__video.is-ready) {
+    opacity: 1;
+  }
+
+  /* Top navy band for fixed-header contrast, left wedge for title copy,
+     bottom band for depth. Named overlay tokens carry hero text contrast. */
+  .v5-hero__overlay {
+    z-index: 2;
+    background:
+      linear-gradient(
+        180deg,
+        var(--navy-overlay-90) 0%,
+        var(--navy-overlay-72) 8%,
+        var(--navy-overlay-42) 16%,
+        transparent 28%
+      ),
+      linear-gradient(
+        90deg,
+        var(--navy-overlay-90) 0%,
+        var(--navy-overlay-52) 38%,
+        transparent 66%
+      ),
+      linear-gradient(180deg, transparent 55%, var(--navy-overlay-72) 100%);
+  }
+
+  .v5-hero__content {
+    position: relative;
+    z-index: 3;
+    width: 100%;
+    max-width: var(--container);
+    margin-inline: auto;
+    padding: 8.125rem var(--gutter) 3.25rem;
+  }
+
+  .v5-hero__title {
+    max-width: 16ch;
+    margin: 0;
+    color: var(--white);
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 4.6vw, 4rem);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.02;
+  }
+
+  .v5-hero__sub {
+    max-width: 46ch;
+    margin: 0.875rem 0 0;
+    color: var(--inverse-85);
+    font-size: clamp(0.9375rem, 1.5vw, 1.125rem);
+    line-height: 1.6;
+  }
+
+  .v5-hero__rule {
+    width: 2.5rem;
+    height: 1px;
+    border: 0;
+    margin: 1.375rem 0;
+    background: var(--gold-rule);
+  }
+
+  :global(.v5-hero__cta span) {
+    transition: transform 180ms ease;
+  }
+
+  :global(.v5-hero__cta:hover span) {
+    transform: translateX(4px);
+  }
+
+  /* Staged reveal: title, support, action. */
+  .v5-rv {
+    opacity: 0;
+    transform: translateX(-10px);
+    transition:
+      opacity 600ms ease,
+      transform 600ms ease;
+  }
+
+  .v5-hero.is-live .v5-rv {
+    opacity: 1;
+    transform: none;
+  }
+
+  .v5-hero.is-live .v5-d1 {
+    transition-delay: 150ms;
+  }
+
+  .v5-hero.is-live .v5-d2 {
+    transition-delay: 300ms;
+  }
+
+  @media (max-width: 47.5rem) {
+    /* Stronger top band for the fixed header; deeper bottom for the title. */
+    .v5-hero__overlay {
+      background:
+        linear-gradient(
+          180deg,
+          var(--navy-overlay-90) 0%,
+          var(--navy-overlay-72) 10%,
+          var(--navy-overlay-42) 18%,
+          transparent 30%
+        ),
+        linear-gradient(
+          180deg,
+          var(--navy-overlay-14) 0%,
+          var(--navy-overlay-14) 100%
+        ),
+        linear-gradient(
+          180deg,
+          transparent 14%,
+          var(--navy-overlay-94) 56%,
+          var(--navy-overlay-94) 100%
+        );
+    }
+
+    .v5-hero__content {
+      padding-top: 6.875rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .v5-hero__video {
+      display: none;
+    }
+
+    .v5-rv {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+</style>

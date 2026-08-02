@@ -1,22 +1,51 @@
 ---
 import HomepageContent from "@/components/HomepageContent.astro";
 import ResponsiveImage from "@/components/ResponsiveImage.astro";
-import { getPath } from "@/data/site";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 
-const hotel = getPath("hotel-financing");
-const heroImage = "/images/two-doors/3ae784ca-ec3e-4b88-ab0b-e22fecce574a.png";
-const heroVideo = "/video/generated_video_10s.mp4";
-const heroAlt = "Bricks to Brands";
+interface HomepageImage {
+  src: string;
+  alt: string;
+}
+
+interface Props {
+  heroImageOverride?: string;
+  heroAltOverride?: string;
+  imageOnly?: boolean;
+  pathDoorImages?: HomepageImage[];
+  processCardImage?: HomepageImage;
+  documentaryImage?: HomepageImage;
+}
+
+const {
+  heroImageOverride,
+  heroAltOverride,
+  imageOnly = false,
+  pathDoorImages,
+  processCardImage,
+  documentaryImage,
+} = Astro.props;
+const heroImage =
+  heroImageOverride ??
+  "/images/two-doors/3ae784ca-ec3e-4b88-ab0b-e22fecce574a.png";
+const heroVideo = imageOnly ? undefined : "/video/generated_video_10s.mp4";
+const heroAlt =
+  heroAltOverride ??
+  "Golden-hour boulevard with a hotel tower on the left and retail storefronts on the right";
 ---
 
 <BaseLayout
-  title="Bricks to Brands"
-  description={hotel.description}
+  title="Built for what's next"
+  description="Financing for hotel owners and consumer brands. Bridge provides direct lending and expert-led financing execution."
   image={heroImage}
+  headerVariant="inverted"
 >
-  <link slot="head" rel="preload" href={heroVideo} as="video" type="video/mp4" />
-  <header class="v2-hero">
+  <header
+    class="v2-hero"
+    style={`--v2-hero-image: url('${heroImage}')`}
+    data-hero
+    data-v2-hero
+  >
     {/* Still image shows immediately; video layers on top once it can play */}
     <ResponsiveImage
       class="v2-hero__image"
@@ -28,99 +57,72 @@ const heroAlt = "Bricks to Brands";
       loading="eager"
       fetchpriority="high"
     />
-    <video
-      class="v2-hero__video"
-      src={heroVideo}
-      autoplay
-      muted
-      loop
-      playsinline
-      webkit-playsinline
-      preload="auto"
-      poster={heroImage}
-      aria-hidden="true"
-      data-v2-hero-video
-    ></video>
+    {
+      heroVideo && (
+        <video
+          class="v2-hero__video"
+          src={heroVideo}
+          autoplay
+          muted
+          loop
+          playsinline
+          webkit-playsinline
+          preload="metadata"
+          poster={heroImage}
+          aria-hidden="true"
+          data-hero-video
+          data-v2-hero-video
+        />
+      )
+    }
     <div class="v2-hero__overlay"></div>
     <div class="v2-hero__content">
-      <h1>Bricks to Brands</h1>
+      <h1 class="display v2-hero__title v2-rv">Built for what&rsquo;s next.</h1>
+      <p class="lede v2-hero__lede v2-rv v2-d1">
+        Financing for hotel owners and consumer brands.
+      </p>
+      <div class="v2-hero__cue v2-rv v2-d2" aria-hidden="true">
+        <i></i>
+        <em>Scroll</em>
+      </div>
     </div>
   </header>
 
-  <HomepageContent />
+  <HomepageContent
+    pathDoorImages={pathDoorImages}
+    processCardImage={processCardImage}
+    documentaryImage={documentaryImage}
+  />
 </BaseLayout>
-
-<script is:inline>
-  (function () {
-    const video = document.querySelector("[data-v2-hero-video]");
-    if (!video) return;
-
-    // Autoplay policies require these to be true before play().
-    video.muted = true;
-    video.defaultMuted = true;
-    video.playsInline = true;
-    video.setAttribute("playsinline", "");
-    video.setAttribute("webkit-playsinline", "");
-
-    const reveal = () => {
-      video.classList.add("is-ready");
-    };
-
-    const tryPlay = () => {
-      const playPromise = video.play();
-      if (playPromise && typeof playPromise.then === "function") {
-        playPromise.then(reveal).catch(function () {
-          /* keep poster/still until the browser allows playback */
-        });
-      }
-    };
-
-    video.addEventListener("loadeddata", reveal);
-    video.addEventListener("canplay", function () {
-      reveal();
-      tryPlay();
-    });
-    video.addEventListener("playing", reveal);
-
-    if (video.readyState >= 2) {
-      reveal();
-      tryPlay();
-    } else {
-      tryPlay();
-    }
-
-    // Resume if the browser pauses background media when the tab returns.
-    document.addEventListener("visibilitychange", function () {
-      if (!document.hidden) tryPlay();
-    });
-  })();
-</script>
 
 <style>
   .v2-hero {
     position: relative;
     display: flex;
-    min-height: 100svh;
-    min-height: 100dvh;
+    min-height: calc(100dvh - 5.25rem);
     overflow: hidden;
     align-items: flex-end;
     justify-content: center;
-    background: var(--surface-brand);
+    /*
+     * Navy fallback only — side “bars” appear when media does not fully cover
+     * this box. Poster is also set as a cover background so gaps never read as
+     * solid brand navy while the video is still opacity:0.
+     */
+    background-color: var(--surface-brand);
+    background-image: var(--v2-hero-image);
+    background-size: cover;
+    background-position: center top;
     color: var(--text-inverse);
   }
 
-  /* Fill the full hero; :global needed because ResponsiveImage is a child component */
+  /* Full-bleed media: pin to every edge of the hero */
   :global(.v2-hero__image),
-  :global(.v2-hero__image img),
-  .v2-hero__video,
   .v2-hero__overlay {
     position: absolute;
     inset: 0;
     display: block;
     width: 100%;
     height: 100%;
-    min-width: 100%;
-    min-height: 100%;
   }
 
   :global(.v2-hero__image) {
@@ -128,62 +130,172 @@ const heroAlt = "Bricks to Brands";
   }
 
   :global(.v2-hero__image img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
     max-width: none;
     max-height: none;
     object-fit: cover;
     object-position: center top;
   }
 
-  .v2-hero__video {
+  /*
+   * Full-bleed video: fill the hero box (not 100vw — that can misalign with
+   * scrollbars). Override global `video { max-width: 100% }`.
+   */
+  :global(video.v2-hero__video) {
+    position: absolute;
+    inset: 0;
     z-index: 1;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
     max-width: none;
     max-height: none;
     object-fit: cover;
     object-position: center top;
     pointer-events: none;
-    /* Stay hidden until a frame is available so the still is the default */
     opacity: 0;
     transition: opacity 350ms ease;
   }
 
-  /* :global so dynamically added .is-ready is not blocked by Astro scoping */
   :global(video.v2-hero__video.is-ready) {
     opacity: 1;
   }
 
   .v2-hero__overlay {
     z-index: 2;
-    background: linear-gradient(
-      180deg,
-      var(--navy-overlay-12) 0%,
-      var(--navy-overlay-42) 48%,
-      var(--navy-overlay-90) 100%
-    );
+    background:
+      linear-gradient(
+        180deg,
+        var(--navy-overlay-42) 0%,
+        transparent 20%,
+        transparent 26%,
+        var(--navy-overlay-94) 76%,
+        var(--navy-overlay-94) 100%
+      ),
+      linear-gradient(
+        180deg,
+        var(--navy-overlay-14) 0%,
+        var(--navy-overlay-14) 100%
+      );
   }
 
   .v2-hero__content {
     position: relative;
     z-index: 3;
     width: 100%;
-    max-width: 40rem;
+    max-width: 52rem;
     margin-inline: auto;
-    padding: 0 var(--gutter) clamp(2.5rem, 6vh, 4.5rem);
+    padding: 0 var(--gutter) clamp(2.5rem, 6vh, 4rem);
     text-align: center;
   }
 
-  .v2-hero__content h1 {
-    margin: 0;
+  .v2-hero__title {
     color: var(--white);
-    font-family: var(--font-display);
-    font-size: clamp(1.375rem, 2.4vw, 1.875rem);
-    font-weight: 560;
-    letter-spacing: -0.012em;
-    line-height: 1.15;
+    text-wrap: balance;
+  }
+
+  .v2-hero__lede {
+    max-width: none;
+    margin-inline: auto;
+    color: var(--inverse-85);
+  }
+
+  .v2-hero__cue {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1.75rem;
+  }
+
+  .v2-hero__cue i {
+    display: block;
+    width: 1px;
+    height: 2.75rem;
+    background: var(--gold-rule);
+    transform-origin: top;
+  }
+
+  .v2-hero__cue em {
+    color: var(--inverse-85);
+    font-size: var(--type-label);
+    font-style: normal;
+    font-weight: 620;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+  }
+
+  .v2-rv {
+    opacity: 0;
+    transform: translateY(12px);
+    transition:
+      opacity 0.6s,
+      transform 0.6s;
+  }
+
+  :global(.v2-hero.is-live) .v2-rv {
+    opacity: 1;
+    transform: none;
+  }
+
+  :global(.v2-hero.is-live) .v2-d1 {
+    transition-delay: 0.15s;
+  }
+
+  :global(.v2-hero.is-live) .v2-d2 {
+    transition-delay: 0.4s;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.v2-hero.is-live) .v2-hero__cue i {
+      animation: 2.4s ease-in-out infinite v2-cue;
+    }
+
+    @keyframes v2-cue {
+      0%,
+      to {
+        opacity: 0.5;
+        transform: scaleY(0.55);
+      }
+
+      50% {
+        opacity: 1;
+        transform: scaleY(1);
+      }
+    }
+  }
+
+  @media (max-width: 47.5rem) {
+    .v2-hero__overlay {
+      background:
+        linear-gradient(
+          180deg,
+          var(--navy-overlay-42) 0%,
+          transparent 16%,
+          transparent 20%,
+          var(--navy-overlay-94) 60%,
+          var(--navy-overlay-94) 100%
+        ),
+        linear-gradient(
+          180deg,
+          var(--navy-overlay-14) 0%,
+          var(--navy-overlay-14) 100%
+        );
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .v2-hero__video {
+    :global(video.v2-hero__video) {
       display: none;
+    }
+
+    .v2-rv {
+      opacity: 1;
+      transform: none;
+      transition: none;
     }
   }
 </style>

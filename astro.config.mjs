@@ -13,6 +13,10 @@ export default defineConfig({
   },
   adapter: node({ mode: "standalone" }),
   integrations: [sitemap()],
+  // Prefetch linked pages on hover so version switches feel instant
+  prefetch: {
+    defaultStrategy: "hover",
+  },
   security: {
     checkOrigin: true,
   },

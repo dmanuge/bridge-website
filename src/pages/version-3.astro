@@ -1,23 +1,59 @@
 ---
+import Action from "@/components/Action.astro";
 import HomepageContent from "@/components/HomepageContent.astro";
 import ResponsiveImage from "@/components/ResponsiveImage.astro";
-import { getPath } from "@/data/site";
+import { proofPoints } from "@/data/site";
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import { applicationHref } from "@/lib/site";
 
-const hotel = getPath("hotel-financing");
-const heroImage = "/images/two-doors/3ae784ca-ec3e-4b88-ab0b-e22fecce574a.png";
-const heroVideo = "/video/grok-video-86861376-b57b-44b7-bb97-193e06fbbe0f.web.mp4";
-const heroAlt = "Bricks to Brands";
+interface HomepageImage {
+  src: string;
+  alt: string;
+}
+
+interface Props {
+  heroImageOverride?: string;
+  heroAltOverride?: string;
+  imageOnly?: boolean;
+  pathDoorImages?: HomepageImage[];
+  processCardImage?: HomepageImage;
+  documentaryImage?: HomepageImage;
+}
+
+const {
+  heroImageOverride,
+  heroAltOverride,
+  imageOnly = false,
+  pathDoorImages,
+  processCardImage,
+  documentaryImage,
+} = Astro.props;
+const heroImage =
+  heroImageOverride ??
+  "/images/two-doors/3ae784ca-ec3e-4b88-ab0b-e22fecce574a.png";
+const heroVideo = imageOnly ? undefined : "/video/generated_video_10s.mp4";
+const heroAlt =
+  heroAltOverride ??
+  "Golden-hour boulevard with a hotel tower on the left and retail storefronts on the right";
+
+/* The headline carries the first proof point; the rail carries the rest, so
+   the page never states a figure the data file does not own. */
+const lead = proofPoints[0]!;
+const railPoints = proofPoints.slice(1);
 ---
 
 <BaseLayout
-  title="Bricks to Brands"
-  description={hotel.description}
+  title="Financing for hotel owners and consumer brands"
+  description="Direct lending for hotel construction and PIPs. Direct financing for brands scaling into retail."
   image={heroImage}
+  headerVariant="over-hero"
 >
-  <link slot="head" rel="preload" href={heroVideo} as="video" type="video/mp4" />
-  <header class="v3-hero">
-    {/* Still image shows immediately; video layers on top once it can play */}
+  <header
+    class="v3-hero"
+    style={`--v3-hero-image: url('${heroImage}')`}
+    data-hero
+    data-v3-hero
+  >
     <ResponsiveImage
       class="v3-hero__image"
       src={heroImage}
@@ -28,71 +64,148 @@ const heroAlt = "Bricks to Brands";
       loading="eager"
       fetchpriority="high"
     />
-    <video
-      class="v3-hero__video"
-      src={heroVideo}
-      autoplay
-      muted
-      loop
-      playsinline
-      webkit-playsinline
-      preload="auto"
-      poster={heroImage}
-      aria-hidden="true"
-      data-v3-hero-video
-    ></video>
-    <div class="v3-hero__overlay"></div>
+    {
+      heroVideo && (
+        <video
+          class="v3-hero__video"
+          src={heroVideo}
+          autoplay
+          muted
+          loop
+          playsinline
+          webkit-playsinline
+          preload="metadata"
+          poster={heroImage}
+          aria-hidden="true"
+          data-hero-video
+          data-v3-hero-video
+        />
+      )
+    }
+    {
+      /*
+      Overlay uses background-attachment: fixed so the navy scrim is painted
+      against the viewport, not the scrolling hero box — it will not shift or
+      re-darken as the page scrolls.
+    */
+    }
+    <div class="v3-hero__overlay" aria-hidden="true"></div>
     <div class="v3-hero__content">
-      <h1>Bricks to Brands</h1>
+      <p class="v3-hero__eyebrow v3-rv">By the numbers</p>
+      <h1 class="v3-hero__title v3-rv v3-d1">
+        {lead.value} in hotel and consumer brand loans.
+      </h1>
+      <dl class="v3-hero__rail v3-rv v3-d2" data-v3-stats>
+        {
+          railPoints.map((point) => (
+            <div>
+              <dt data-countup={point.value}>{point.value}</dt>
+              <dd>{point.label}</dd>
+            </div>
+          ))
+        }
+      </dl>
+      <div class="v3-hero__actions v3-rv v3-d3">
+        <Action
+          href={applicationHref("v3-hero")}
+          variant="light"
+          analytics="application_exit"
+          arrow
+          class="v3-hero__cta"
+        >
+          Get Started
+        </Action>
+        <Action
+          href="/success-stories"
+          variant="text"
+          arrow
+          class="v3-hero__stories"
+        >
+          See success stories
+        </Action>
+      </div>
+      <p class="v3-hero__disclosure v3-rv v3-d3">
+        All financing is subject to application, credit review, and
+        underwriting.
+      </p>
     </div>
   </header>
 
-  <HomepageContent />
+  <HomepageContent
+    pathDoorImages={pathDoorImages}
+    processCardImage={processCardImage}
+    documentaryImage={documentaryImage}
+  />
 </BaseLayout>
 
 <script is:inline>
   (function () {
-    const video = document.querySelector("[data-v3-hero-video]");
-    if (!video) return;
+    const rail = document.querySelector("[data-v3-stats]");
+    if (!rail) return;
 
-    // Autoplay policies require these to be true before play().
-    video.muted = true;
-    video.defaultMuted = true;
-    video.playsInline = true;
-    video.setAttribute("playsinline", "");
-    video.setAttribute("webkit-playsinline", "");
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (reduced.matches) return;
 
-    const reveal = () => {
-      video.classList.add("is-ready");
+    const cells = Array.prototype.slice.call(
+      rail.querySelectorAll("[data-countup]"),
+    );
+    const targets = cells.map(function (cell) {
+      const raw = cell.getAttribute("data-countup") || "";
+      const match = raw.match(/[\d,]+/);
+      if (!match) return null;
+      const digits = match[0];
+      return {
+        cell: cell,
+        value: parseInt(digits.replace(/,/g, ""), 10),
+        grouped: digits.indexOf(",") !== -1,
+        prefix: raw.slice(0, match.index),
+        suffix: raw.slice(match.index + digits.length),
+      };
+    });
+
+    const live = targets.filter(Boolean);
+    if (!live.length) return;
+
+    /* Hold the final string until the run starts so a failed rAF or a
+       mid-flight navigation still leaves the real numbers on screen. */
+    const render = function (target, value) {
+      const shown = target.grouped ? value.toLocaleString("en-US") : value;
+      target.cell.textContent = target.prefix + shown + target.suffix;
     };
 
-    const tryPlay = () => {
-      const playPromise = video.play();
-      if (playPromise && typeof playPromise.then === "function") {
-        playPromise.then(reveal).catch(function () {
-          /* keep poster/still until the browser allows playback */
+    /* 50% slower than the original 900ms count-up */
+    const DURATION = 1350;
+    const run = function () {
+      const start = performance.now();
+      const step = function (now) {
+        const t = Math.min(1, (now - start) / DURATION);
+        /* ease-out cubic: fast settle, no overshoot past the real figure */
+        const eased = 1 - Math.pow(1 - t, 3);
+        live.forEach(function (target) {
+          render(target, Math.round(target.value * eased));
         });
-      }
+        if (t < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
     };
 
-    video.addEventListener("loadeddata", reveal);
-    video.addEventListener("canplay", function () {
-      reveal();
-      tryPlay();
-    });
-    video.addEventListener("playing", reveal);
-
-    if (video.readyState >= 2) {
-      reveal();
-      tryPlay();
-    } else {
-      tryPlay();
+    /* The reveal is gated on the hero gaining .is-live in BaseLayout, which
+       waits on the video; start the count with the same beat. */
+    const hero = rail.closest("[data-hero]");
+    if (!hero) {
+      run();
+      return;
     }
-
-    // Resume if the browser pauses background media when the tab returns.
-    document.addEventListener("visibilitychange", function () {
-      if (!document.hidden) tryPlay();
+    if (hero.classList.contains("is-live")) {
+      window.setTimeout(run, 300);
+      return;
+    }
+    const observer = new MutationObserver(function () {
+      if (!hero.classList.contains("is-live")) return;
+      observer.disconnect();
+      window.setTimeout(run, 300);
     });
+    observer.observe(hero, { attributeFilter: ["class"] });
   })();
 </script>
 
@@ -104,23 +217,25 @@ const heroAlt = "Bricks to Brands";
     min-height: 100dvh;
     overflow: hidden;
     align-items: flex-end;
-    justify-content: center;
-    background: var(--surface-brand);
+    /*
+     * Navy fallback only — side “bars” appear when media does not fully cover
+     * this box. Poster is also set as a cover background so gaps never read as
+     * solid brand navy while the video is still opacity:0.
+     */
+    background-color: var(--surface-brand);
+    background-image: var(--v3-hero-image);
+    background-size: cover;
+    background-position: center top;
     color: var(--text-inverse);
   }
 
-  /* Fill the full hero; :global needed because ResponsiveImage is a child component */
   :global(.v3-hero__image),
-  :global(.v3-hero__image img),
-  .v3-hero__video,
   .v3-hero__overlay {
     position: absolute;
     inset: 0;
     display: block;
     width: 100%;
     height: 100%;
-    min-width: 100%;
-    min-height: 100%;
   }
 
   :global(.v3-hero__image) {
@@ -128,62 +243,272 @@ const heroAlt = "Bricks to Brands";
   }
 
   :global(.v3-hero__image img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
     max-width: none;
     max-height: none;
     object-fit: cover;
     object-position: center top;
   }
 
-  .v3-hero__video {
+  /*
+   * Full-bleed video: fill the hero box (not 100vw — that can misalign with
+   * scrollbars). Override global `video { max-width: 100% }`.
+   */
+  :global(video.v3-hero__video) {
+    position: absolute;
+    inset: 0;
     z-index: 1;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
     max-width: none;
     max-height: none;
     object-fit: cover;
     object-position: center top;
     pointer-events: none;
-    /* Stay hidden until a frame is available so the still is the default */
     opacity: 0;
     transition: opacity 350ms ease;
   }
 
-  /* :global so dynamically added .is-ready is not blocked by Astro scoping */
   :global(video.v3-hero__video.is-ready) {
     opacity: 1;
   }
 
+  /*
+   * Navy scrim is painted in viewport space (background-attachment: fixed),
+   * so it does not slide, lighten, or re-stack as the hero scrolls. Each
+   * gradient layer needs its own attachment value.
+   */
   .v3-hero__overlay {
     z-index: 2;
-    background: linear-gradient(
-      180deg,
-      var(--navy-overlay-12) 0%,
-      var(--navy-overlay-42) 48%,
-      var(--navy-overlay-90) 100%
-    );
+    pointer-events: none;
+    background-image:
+      linear-gradient(
+        180deg,
+        var(--navy-overlay-90) 0%,
+        var(--navy-overlay-72) 8%,
+        var(--navy-overlay-42) 16%,
+        transparent 28%
+      ),
+      linear-gradient(
+        180deg,
+        var(--navy-overlay-14) 0%,
+        var(--navy-overlay-14) 100%
+      ),
+      linear-gradient(
+        180deg,
+        transparent 20%,
+        var(--navy-overlay-72) 58%,
+        var(--navy-overlay-94) 100%
+      );
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-position: center top;
+    background-attachment: fixed, fixed, fixed;
   }
 
   .v3-hero__content {
     position: relative;
     z-index: 3;
     width: 100%;
-    max-width: 40rem;
+    max-width: var(--container);
     margin-inline: auto;
-    padding: 0 var(--gutter) clamp(2.5rem, 6vh, 4.5rem);
-    text-align: center;
+    padding: 6rem var(--gutter) 2rem;
+    box-sizing: border-box;
   }
 
-  .v3-hero__content h1 {
+  /* Gold caps only clear 4.5:1 on opaque navy, never over a scrim, so the
+     eyebrow is a solid chip rather than plain text. */
+  .v3-hero__eyebrow {
+    display: inline-block;
+    margin: 0 0 0.625rem;
+    padding: 0.3rem 0.55rem;
+    border-radius: var(--radius-sm);
+    background: var(--surface-brand);
+    color: var(--gold-500);
+    font-size: var(--type-label);
+    font-weight: 660;
+    letter-spacing: 0.18em;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .v3-hero__title {
+    max-width: none;
     margin: 0;
     color: var(--white);
     font-family: var(--font-display);
-    font-size: clamp(1.375rem, 2.4vw, 1.875rem);
-    font-weight: 560;
-    letter-spacing: -0.012em;
-    line-height: 1.15;
+    font-size: clamp(1.25rem, 2.8vw, 2.5rem);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.08;
+    white-space: nowrap;
+  }
+
+  .v3-hero__rail {
+    display: grid;
+    width: 100%;
+    margin: 1.25rem 0 0;
+    padding-top: 1rem;
+    border-top: 0;
+    gap: clamp(1rem, 2.5vw, 2.25rem);
+    grid-template-columns: repeat(3, max-content);
+  }
+
+  /* Gold rule spans two-thirds of the page width */
+  .v3-hero__rail::before {
+    content: "";
+    display: block;
+    width: 66.666%;
+    height: 1px;
+    margin-bottom: 0;
+    background: var(--gold-rule);
+    grid-column: 1 / -1;
+  }
+
+  .v3-hero__rail dt {
+    color: var(--white);
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 2vw, 1.75rem);
+    font-weight: 580;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+    line-height: 1;
+  }
+
+  .v3-hero__rail dd {
+    max-width: 16ch;
+    margin: 0.35rem 0 0;
+    color: var(--inverse-85);
+    font-size: var(--type-label);
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  .v3-hero__actions {
+    display: flex;
+    align-items: center;
+    margin-top: 1.25rem;
+    gap: clamp(0.875rem, 2vw, 1.5rem);
+    flex-wrap: wrap;
+  }
+
+  :global(.v3-hero__cta span) {
+    transition: transform 180ms ease;
+  }
+
+  :global(.v3-hero__cta:hover span) {
+    transform: translateX(4px);
+  }
+
+  /* Light inverse link over the hero (not brand blue). */
+  :global(.v3-hero__stories) {
+    color: var(--inverse-85);
+    text-decoration: none;
+  }
+
+  :global(.v3-hero__stories:hover) {
+    color: var(--white);
+  }
+
+  .v3-hero__disclosure {
+    max-width: 52ch;
+    margin: 0.875rem 0 0;
+    color: var(--text-inverse-muted);
+    font-size: 0.75rem;
+    line-height: 1.45;
+  }
+
+  /* Staged reveal: eyebrow, headline, ledger, actions. */
+  .v3-rv {
+    opacity: 0;
+    transform: translateX(-10px);
+    transition:
+      opacity 600ms ease,
+      transform 600ms ease;
+  }
+
+  .v3-hero.is-live .v3-rv {
+    opacity: 1;
+    transform: none;
+  }
+
+  .v3-hero.is-live .v3-d1 {
+    transition-delay: 120ms;
+  }
+
+  .v3-hero.is-live .v3-d2 {
+    transition-delay: 240ms;
+  }
+
+  .v3-hero.is-live .v3-d3 {
+    transition-delay: 360ms;
+  }
+
+  @media (max-width: 56.25rem) {
+    .v3-hero__rail {
+      grid-template-columns: repeat(2, max-content);
+      row-gap: 1.5rem;
+    }
+  }
+
+  @media (max-width: 47.5rem) {
+    .v3-hero__overlay {
+      background-image:
+        linear-gradient(
+          180deg,
+          var(--navy-overlay-90) 0%,
+          var(--navy-overlay-72) 10%,
+          var(--navy-overlay-42) 18%,
+          transparent 30%
+        ),
+        linear-gradient(
+          180deg,
+          var(--navy-overlay-14) 0%,
+          var(--navy-overlay-14) 100%
+        ),
+        linear-gradient(
+          180deg,
+          transparent 8%,
+          var(--navy-overlay-94) 44%,
+          var(--navy-overlay-96) 100%
+        );
+      background-attachment: fixed, fixed, fixed;
+    }
+
+    .v3-hero__content {
+      padding: 5.5rem var(--gutter) 1.5rem;
+    }
+
+    .v3-hero__rail dd {
+      max-width: 14ch;
+    }
+  }
+
+  /*
+   * iOS Safari often ignores background-attachment: fixed and can paint
+   * oddly; fall back to a normal (element-bound) scrim there only.
+   */
+  @supports (-webkit-touch-callout: none) {
+    .v3-hero__overlay {
+      background-attachment: scroll, scroll, scroll;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .v3-hero__video {
+    :global(video.v3-hero__video) {
       display: none;
+    }
+
+    .v3-rv {
+      opacity: 1;
+      transform: none;
+      transition: none;
     }
   }
 </style>

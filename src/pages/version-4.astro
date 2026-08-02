@@ -1,0 +1,279 @@
+---
+import HomepageContent from "@/components/HomepageContent.astro";
+import ResponsiveImage from "@/components/ResponsiveImage.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+interface HomepageImage {
+  src: string;
+  alt: string;
+}
+
+interface Props {
+  heroImageOverride?: string;
+  heroAltOverride?: string;
+  imageOnly?: boolean;
+  pathDoorImages?: HomepageImage[];
+  processCardImage?: HomepageImage;
+  documentaryImage?: HomepageImage;
+}
+
+const {
+  heroImageOverride,
+  heroAltOverride,
+  imageOnly = false,
+  pathDoorImages,
+  processCardImage,
+  documentaryImage,
+} = Astro.props;
+const heroImage =
+  heroImageOverride ??
+  "/images/two-doors/3ae784ca-ec3e-4b88-ab0b-e22fecce574a.png";
+const heroVideo = imageOnly ? undefined : "/video/generated_video_15s.mp4";
+const heroAlt =
+  heroAltOverride ??
+  "Golden-hour boulevard with a hotel tower on the left and retail storefronts on the right";
+---
+
+<BaseLayout
+  title="Built for what's next"
+  description="Financing for hotel owners and consumer brands. Bridge provides direct lending and expert-led financing execution."
+  image={heroImage}
+  headerVariant="inverted"
+>
+  <header class="v4-hero" data-hero data-v4-hero>
+    {/* Still image shows immediately; video layers on top once it can play */}
+    <ResponsiveImage
+      class="v4-hero__image"
+      src={heroImage}
+      alt={heroAlt}
+      width={1600}
+      height={900}
+      sizes="100vw"
+      loading="eager"
+      fetchpriority="high"
+    />
+    {
+      heroVideo && (
+        <video
+          class="v4-hero__video"
+          src={heroVideo}
+          autoplay
+          muted
+          loop
+          playsinline
+          webkit-playsinline
+          preload="metadata"
+          poster={heroImage}
+          aria-hidden="true"
+          data-hero-video
+          data-v4-hero-video
+        />
+      )
+    }
+    <div class="v4-hero__overlay"></div>
+    <div class="v4-hero__content">
+      <h1 class="display v4-hero__title v4-rv">Built for what&rsquo;s next.</h1>
+      <p class="lede v4-hero__lede v4-rv v4-d1">
+        Financing for hotel owners and consumer brands.
+      </p>
+      <div class="v4-hero__cue v4-rv v4-d2" aria-hidden="true">
+        <i></i>
+        <em>Scroll</em>
+      </div>
+    </div>
+  </header>
+
+  <HomepageContent
+    pathDoorImages={pathDoorImages}
+    processCardImage={processCardImage}
+    documentaryImage={documentaryImage}
+  />
+</BaseLayout>
+
+<style>
+  .v4-hero {
+    position: relative;
+    display: flex;
+    min-height: calc(100dvh - 5.25rem);
+    overflow: hidden;
+    align-items: flex-end;
+    justify-content: center;
+    background: var(--surface-brand);
+    color: var(--text-inverse);
+  }
+
+  /* Fill the full hero; :global needed because ResponsiveImage is a child component */
+  :global(.v4-hero__image),
+  :global(.v4-hero__image img),
+  .v4-hero__video,
+  .v4-hero__overlay {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-width: 100%;
+    min-height: 100%;
+  }
+
+  :global(.v4-hero__image) {
+    z-index: 0;
+  }
+
+  :global(.v4-hero__image img) {
+    max-width: none;
+    max-height: none;
+    object-fit: cover;
+    object-position: center top;
+  }
+
+  .v4-hero__video {
+    z-index: 1;
+    max-width: none;
+    max-height: none;
+    object-fit: cover;
+    object-position: center top;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 350ms ease;
+  }
+
+  :global(video.v4-hero__video.is-ready) {
+    opacity: 1;
+  }
+
+  .v4-hero__overlay {
+    z-index: 2;
+    background:
+      linear-gradient(
+        180deg,
+        var(--navy-overlay-42) 0%,
+        transparent 20%,
+        transparent 26%,
+        var(--navy-overlay-94) 76%,
+        var(--navy-overlay-94) 100%
+      ),
+      linear-gradient(
+        180deg,
+        var(--navy-overlay-14) 0%,
+        var(--navy-overlay-14) 100%
+      );
+  }
+
+  .v4-hero__content {
+    position: relative;
+    z-index: 3;
+    width: 100%;
+    max-width: 52rem;
+    margin-inline: auto;
+    padding: 0 var(--gutter) clamp(2.5rem, 6vh, 4rem);
+    text-align: center;
+  }
+
+  .v4-hero__title {
+    color: var(--white);
+    text-wrap: balance;
+  }
+
+  .v4-hero__lede {
+    max-width: none;
+    margin-inline: auto;
+    color: var(--inverse-85);
+  }
+
+  .v4-hero__cue {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1.75rem;
+  }
+
+  .v4-hero__cue i {
+    display: block;
+    width: 1px;
+    height: 2.75rem;
+    background: var(--gold-rule);
+    transform-origin: top;
+  }
+
+  .v4-hero__cue em {
+    color: var(--inverse-85);
+    font-size: var(--type-label);
+    font-style: normal;
+    font-weight: 620;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+  }
+
+  .v4-rv {
+    opacity: 0;
+    transform: translateY(12px);
+    transition:
+      opacity 0.6s,
+      transform 0.6s;
+  }
+
+  :global(.v4-hero.is-live) .v4-rv {
+    opacity: 1;
+    transform: none;
+  }
+
+  :global(.v4-hero.is-live) .v4-d1 {
+    transition-delay: 0.15s;
+  }
+
+  :global(.v4-hero.is-live) .v4-d2 {
+    transition-delay: 0.4s;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.v4-hero.is-live) .v4-hero__cue i {
+      animation: 2.4s ease-in-out infinite v4-cue;
+    }
+
+    @keyframes v4-cue {
+      0%,
+      to {
+        opacity: 0.5;
+        transform: scaleY(0.55);
+      }
+
+      50% {
+        opacity: 1;
+        transform: scaleY(1);
+      }
+    }
+  }
+
+  @media (max-width: 47.5rem) {
+    .v4-hero__overlay {
+      background:
+        linear-gradient(
+          180deg,
+          var(--navy-overlay-42) 0%,
+          transparent 16%,
+          transparent 20%,
+          var(--navy-overlay-94) 60%,
+          var(--navy-overlay-94) 100%
+        ),
+        linear-gradient(
+          180deg,
+          var(--navy-overlay-14) 0%,
+          var(--navy-overlay-14) 100%
+        );
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .v4-hero__video {
+      display: none;
+    }
+
+    .v4-rv {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+</style>

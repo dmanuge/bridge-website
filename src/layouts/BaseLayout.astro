@@ -4,6 +4,7 @@ import SiteFooter from "@/components/SiteFooter.astro";
 import SiteHeader from "@/components/SiteHeader.astro";
 import { siteSettings } from "@/data/site";
 import { siteUrl } from "@/lib/site";
+import { ClientRouter } from "astro:transitions";
 import "@/styles/global.css";
 
 interface Props {
@@ -12,6 +13,13 @@ interface Props {
   image?: string;
   noindex?: boolean;
   schema?: Record<string, unknown> | Record<string, unknown>[];
+  /**
+   * Site header color treatment.
+   * - default: light chrome over dark heroes; frosted glass after scroll
+   * - inverted: dark chrome on solid ivory (sticky)
+   * - over-hero: light chrome over full-bleed heroes; frosted glass after scroll
+   */
+  headerVariant?: "default" | "inverted" | "over-hero";
 }
 
 const {
@@ -20,6 +28,7 @@ const {
   image = "/images/brand/hotel-construction-sunrise.png",
   noindex = false,
   schema,
+  headerVariant = "default",
 } = Astro.props;
 const canonical = new URL(Astro.url.pathname, siteUrl).toString();
 const socialImage = new URL(image, siteUrl).toString();
@@ -76,16 +85,103 @@ const schemas = [
         />
       ))
     }
+    {/* SPA-style navigation so version/home switches avoid full reloads */}
+    <ClientRouter />
     <slot name="head" />
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
-    <SiteHeader />
+    <SiteHeader variant={headerVariant} />
+    {
+      /*
+      No transition:animate on main — it creates a containing block that breaks
+      position:fixed hero media (version-3 video/overlay would scroll with the page).
+    */
+    }
     <main id="main-content">
       <slot />
     </main>
     <SiteFooter />
     <Analytics />
+    <script>
+      /**
+       * Hero autoplay that re-runs after ClientRouter navigations.
+       * Poster paints first; video starts loading only after the page is live
+       * so multi‑MB clips do not block the version switch.
+       */
+      let visibilityBound = false;
+
+      function initHeroVideos() {
+        document
+          .querySelectorAll<HTMLElement>("[data-hero]")
+          .forEach((hero) => {
+            const video =
+              hero.querySelector<HTMLVideoElement>("[data-hero-video]");
+            if (!video) {
+              window.requestAnimationFrame(() => hero.classList.add("is-live"));
+              return;
+            }
+            if (video.dataset.heroInit === "1") return;
+            video.dataset.heroInit = "1";
+
+            video.muted = true;
+            video.defaultMuted = true;
+            video.playsInline = true;
+            video.setAttribute("playsinline", "");
+            video.setAttribute("webkit-playsinline", "");
+
+            const reveal = () => {
+              video.classList.add("is-ready");
+              hero.classList.add("is-live");
+            };
+
+            const tryPlay = () => {
+              const playPromise = video.play();
+              if (playPromise && typeof playPromise.then === "function") {
+                playPromise.then(reveal).catch(() => {
+                  /* keep poster until autoplay is allowed */
+                });
+              }
+            };
+
+            video.addEventListener("loadeddata", reveal);
+            video.addEventListener("canplay", () => {
+              reveal();
+              tryPlay();
+            });
+            video.addEventListener("playing", reveal);
+
+            // Defer full buffer until after navigation paint.
+            if (video.preload !== "auto") {
+              video.preload = "auto";
+            }
+            if (video.readyState >= 2) {
+              reveal();
+              tryPlay();
+            } else {
+              video.load();
+              tryPlay();
+            }
+
+            // Do not wait forever on large files for copy choreography.
+            window.setTimeout(() => hero.classList.add("is-live"), 900);
+
+            if (!visibilityBound) {
+              document.addEventListener("visibilitychange", () => {
+                if (document.hidden) return;
+                document
+                  .querySelectorAll<HTMLVideoElement>("[data-hero-video]")
+                  .forEach((v) => {
+                    void v.play().catch(() => undefined);
+                  });
+              });
+              visibilityBound = true;
+            }
+          });
+      }
+
+      document.addEventListener("astro:page-load", initHeroVideos);
+    </script>
   </body>
 </html>
 

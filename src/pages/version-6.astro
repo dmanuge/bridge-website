@@ -1,0 +1,46 @@
+---
+import HomepageContent from "@/components/HomepageContent.astro";
+import TwoDoorsHero from "@/components/TwoDoorsHero.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+const heroDoorImages = [
+  {
+    src: "/images/two-doors/fedbca3a-7428-4a02-8837-a2ae17bab9ed.png",
+    alt: "Completed hotel tower in warm evening light",
+  },
+  {
+    src: "/images/two-doors/0023710f-db6b-427c-8837-379c7fc76680.png",
+    alt: "Retail center and parking area in warm evening light",
+  },
+];
+const pathDoorImages = [
+  {
+    src: "/images/two-doors/95976158-986f-4d44-b7f6-c6be9b034dd7.png",
+    alt: "Hotel construction manager reviewing plans at an active site",
+  },
+  {
+    src: "/images/two-doors/two-doors-box.jpg",
+    alt: "Two unbranded product shipping boxes on a neutral background",
+  },
+];
+const processCardImage = {
+  src: "/images/two-doors/two-doors-room.jpg",
+  alt: "Renovated select-service hotel room",
+};
+const documentaryImage = {
+  src: "/images/two-doors/two-doors-ware.jpg",
+  alt: "Consumer product inventory stored in a warehouse",
+};
+---
+
+<BaseLayout
+  title="Bridge"
+  description="Financing for hotel owners and consumer brands. Bridge provides direct lending and expert-led financing execution."
+>
+  <TwoDoorsHero doorImages={heroDoorImages} />
+  <HomepageContent
+    pathDoorImages={pathDoorImages}
+    processCardImage={processCardImage}
+    documentaryImage={documentaryImage}
+  />
+</BaseLayout>

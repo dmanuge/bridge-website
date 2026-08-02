@@ -2,7 +2,17 @@
 import { paths, proofPoints } from "@/data/site";
 import ResponsiveImage from "@/components/ResponsiveImage.astro";
 
-const doorImages = [
+interface DoorImage {
+  src: string;
+  alt: string;
+}
+
+interface Props {
+  /** Optional replacement images for the hotel and consumer doors. */
+  doorImages?: DoorImage[];
+}
+
+const defaultDoorImages: DoorImage[] = [
   {
     src: "/images/two-doors/f7ac3e21-bdf0-4528-a15e-f2ca14a0c3ef.png",
     alt: "Hotel financing opportunity",
@@ -12,6 +22,7 @@ const doorImages = [
     alt: "Consumer brand financing opportunity",
   },
 ];
+const { doorImages = defaultDoorImages } = Astro.props;
 const doorDescriptions = [
   "New construction, PIPs, and expert-led execution for every other hotel need.",
   "Inventory, orders, receivables, working capital and acquisitions.",
@@ -35,11 +46,11 @@ const recentFinancings = [
     <h1 id="two-doors-title" class="two-doors__promise">
       Financing for hotel owners and consumer brands.
     </h1>
-    <dl class="two-doors__proof">
+    <dl class="two-doors__proof" data-home-stats>
       {
         proofPoints.map((point) => (
           <div class="two-doors__proof-item">
-            <dt>{point.value}</dt>
+            <dt data-countup={point.value}>{point.value}</dt>
             <dd>{point.label}</dd>
           </div>
         ))
@@ -372,3 +383,85 @@ const recentFinancings = [
     }
   }
 </style>
+
+<script>
+  type CountTarget = {
+    cell: HTMLElement;
+    value: number;
+    grouped: boolean;
+    prefix: string;
+    suffix: string;
+  };
+
+  function initHomeStatsCountUp() {
+    const rail = document.querySelector<HTMLElement>("[data-home-stats]");
+    if (!rail || rail.dataset.countupInit === "1") return;
+    rail.dataset.countupInit = "1";
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const cells = Array.from(
+      rail.querySelectorAll<HTMLElement>("[data-countup]"),
+    );
+    const targets = cells
+      .map((cell): CountTarget | null => {
+        const raw = cell.getAttribute("data-countup") || "";
+        const match = raw.match(/[\d,]+/);
+        if (!match) return null;
+        const digits = match[0]!;
+        return {
+          cell,
+          value: parseInt(digits.replace(/,/g, ""), 10),
+          grouped: digits.includes(","),
+          prefix: raw.slice(0, match.index),
+          suffix: raw.slice((match.index ?? 0) + digits.length),
+        };
+      })
+      .filter((target): target is CountTarget => target !== null);
+
+    if (!targets.length) return;
+
+    const render = (target: CountTarget, value: number) => {
+      const shown = target.grouped
+        ? value.toLocaleString("en-US")
+        : String(value);
+      target.cell.textContent = target.prefix + shown + target.suffix;
+    };
+
+    /* Start from zero so the SSR final values do not flash before the run. */
+    for (const target of targets) render(target, 0);
+
+    /* Match version-3 duration (50% slower than the original 900ms). */
+    const DURATION = 1350;
+    const run = () => {
+      const start = performance.now();
+      const step = (now: number) => {
+        const t = Math.min(1, (now - start) / DURATION);
+        const eased = 1 - Math.pow(1 - t, 3);
+        for (const target of targets) {
+          render(target, Math.round(target.value * eased));
+        }
+        if (t < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    };
+
+    /* Start when the proof rail enters the viewport (hero is above the fold). */
+    if (typeof IntersectionObserver === "undefined") {
+      run();
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        observer.disconnect();
+        window.setTimeout(run, 200);
+      },
+      { threshold: 0.35 },
+    );
+    observer.observe(rail);
+  }
+
+  document.addEventListener("astro:page-load", initHomeStatsCountUp);
+</script>

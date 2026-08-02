@@ -50,6 +50,10 @@
   --gold-rule: rgb(201 162 78 / 72%);
   --navy-shadow: rgb(4 17 42 / 12%);
   --navy-shadow-strong: rgb(4 17 42 / 18%);
+  --navy-shadow-soft: rgb(4 17 42 / 6%);
+  --inverse-10: rgb(243 247 251 / 10%);
+  --header-glass: rgb(4 17 42 / 55%);
+  --text-on-light-muted: rgb(4 17 42 / 72%);
   /* Overlay alphas: original × 0.5, then × 1.25 twice */
   --navy-overlay-12: rgb(4 17 42 / 9.375%);
   --navy-overlay-14: rgb(4 17 42 / 10.9375%);

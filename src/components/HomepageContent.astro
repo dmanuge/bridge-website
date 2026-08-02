@@ -15,7 +15,11 @@ interface PathDoorImage {
 
 interface Props {
   /** Optional override for the two "What we finance" door images (left, right). */
-  pathDoorImages?: PathDoorImage[];
+  pathDoorImages?: PathDoorImage[] | undefined;
+  /** Optional realistic replacement for the hotel process-card image. */
+  processCardImage?: PathDoorImage | undefined;
+  /** Optional realistic replacement for the customer documentary image. */
+  documentaryImage?: PathDoorImage | undefined;
 }
 
 const defaultPathDoorImages: PathDoorImage[] = [
@@ -29,7 +33,20 @@ const defaultPathDoorImages: PathDoorImage[] = [
   },
 ];
 
-const { pathDoorImages = defaultPathDoorImages } = Astro.props;
+const defaultProcessCardImage: PathDoorImage = {
+  src: "/images/two-doors/hotel-room-mediterranean-coded-tapestry.png",
+  alt: "Renovated select-service hotel room",
+};
+const defaultDocumentaryImage: PathDoorImage = {
+  src: "/images/two-doors/c3594866-c5c8-4978-a189-dcab0bdae851.png",
+  alt: "Consumer brand founder working in a warehouse",
+};
+
+const {
+  pathDoorImages = defaultPathDoorImages,
+  processCardImage = defaultProcessCardImage,
+  documentaryImage = defaultDocumentaryImage,
+} = Astro.props;
 
 const featuredStory = stories[0]!;
 const processResult = results[1]!;
@@ -93,8 +110,8 @@ const featuredQuote = featuredStory.quote.split(".")[0] + ".";
   <article class="process-card" aria-label="Recent hotel financing">
     <ResponsiveImage
       class="process-card__image"
-      src="/images/two-doors/two-doors-room.jpg"
-      alt="Renovated select-service hotel room"
+      src={processCardImage.src}
+      alt={processCardImage.alt}
       width={800}
       height={500}
       sizes="(max-width: 900px) 100vw, 38vw"
@@ -130,8 +147,8 @@ const featuredQuote = featuredStory.quote.split(".")[0] + ".";
   </div>
   <ResponsiveImage
     class="documentary__image"
-    src="/images/two-doors/c3594866-c5c8-4978-a189-dcab0bdae851.png"
-    alt="Consumer brand founder working in a warehouse"
+    src={documentaryImage.src}
+    alt={documentaryImage.alt}
     width={1600}
     height={900}
     sizes="(max-width: 900px) 100vw, 43vw"

@@ -1,29 +1,57 @@
 ---
 import Action from "@/components/Action.astro";
 import { applicationHref } from "@/lib/site";
+
+interface Props {
+  /**
+   * "default" — light text/logo for dark heroes; frosted glass after scroll.
+   * "inverted" — dark text/logo on solid ivory (sticky).
+   * "over-hero" — light chrome over full-bleed heroes; frosted glass after scroll.
+   */
+  variant?: "default" | "inverted" | "over-hero";
+}
+
+const { variant = "default" } = Astro.props;
 const pathname = Astro.url.pathname;
 const nav = [
-  { href: "/version-2", label: "Version 2" },
-  { href: "/version-3", label: "Version 3" },
   { href: "/hotel-financing", label: "Hotel Financing" },
   { href: "/consumer-brands", label: "Consumer Brands" },
   { href: "/success-stories", label: "Success Stories" },
   { href: "/how-it-works", label: "How It Works" },
   { href: "/about", label: "About" },
 ];
+const versions = Array.from({ length: 9 }, (_, index) => index + 2).map(
+  (n) => ({
+    href: `/version-${n}`,
+    label: `V${n}`,
+  }),
+);
 const isCurrent = (href: string) =>
   pathname === href || pathname.startsWith(`${href}/`);
+const isInverted = variant === "inverted";
+const isOverHero = variant === "over-hero";
+const logoSrc = isInverted
+  ? "/logos/bridge-logo-navy.png"
+  : "/logos/bridge-logo-white.png";
+const ctaVariant = isInverted ? "primary" : "light";
 ---
 
-<header class="header" data-scrolled="false">
+<header
+  class:list={[
+    "header",
+    isInverted && "header--inverted",
+    isOverHero && "header--over-hero",
+  ]}
+  data-scrolled="false"
+>
   <div class="header__inner">
-    <a class="wordmark" href="/" aria-label="Bridge home">
-      <img
-        src="/logos/bridge-logo-white.png"
-        alt="Bridge"
-        width="142"
-        height="38"
-      />
+    <a
+      class="wordmark"
+      href="/"
+      data-astro-prefetch="hover"
+      aria-label="Bridge home"
+    >
+      <img src={logoSrc} alt="Bridge" width="142" height="38" />
     </a>
 
     <nav class="desktop-nav" aria-label="Main navigation">
@@ -39,10 +67,24 @@ const isCurrent = (href: string) =>
       }
     </nav>
 
+    <nav class="proto-switch" aria-label="Prototype versions">
+      {
+        versions.map((v) => (
+          <a
+            href={v.href}
+            data-astro-prefetch="hover"
+            aria-current={isCurrent(v.href) ? "page" : undefined}
+          >
+            {v.label}
+          </a>
+        ))
+      }
+    </nav>
+
     <div class="header__cta">
       <Action
         href={applicationHref("header")}
-        variant="light"
+        variant={ctaVariant}
         analytics="application_exit"
       >
         Get Started
@@ -65,7 +107,21 @@ const isCurrent = (href: string) =>
           ))
         }
         <a href="/contact">Contact</a>
-        <Action href={applicationHref("mobile-menu")} variant="light"
+        <div class="mobile-proto">
+          <span>Prototypes</span>
+          {
+            versions.map((v) => (
+              <a
+                href={v.href}
+                data-astro-prefetch="hover"
+                aria-current={isCurrent(v.href) ? "page" : undefined}
+              >
+                {v.label}
+              </a>
+            ))
+          }
+        </div>
+        <Action href={applicationHref("mobile-menu")} variant={ctaVariant}
           >Get Started</Action
         >
       </nav>
@@ -74,10 +130,12 @@ const isCurrent = (href: string) =>
 </header>
 
 <script>
-  const header = document.querySelector<HTMLElement>(".header");
+  // Re-bind after ClientRouter navigations; keep a single scroll listener.
   let frame = 0;
+  let scrollBound = false;
 
   const updateHeader = () => {
+    const header = document.querySelector<HTMLElement>(".header");
     header?.setAttribute("data-scrolled", String(window.scrollY > 24));
     frame = 0;
   };
@@ -86,8 +144,15 @@ const isCurrent = (href: string) =>
     if (!frame) frame = window.requestAnimationFrame(updateHeader);
   };
 
-  updateHeader();
-  window.addEventListener("scroll", requestHeaderUpdate, { passive: true });
+  const onPageLoad = () => {
+    updateHeader();
+    if (!scrollBound) {
+      window.addEventListener("scroll", requestHeaderUpdate, { passive: true });
+      scrollBound = true;
+    }
+  };
+
+  document.addEventListener("astro:page-load", onPageLoad);
 </script>
 
 <style>
@@ -112,12 +177,46 @@ const isCurrent = (href: string) =>
 
   /* Frosted glass when scrolled — translucent navy over page content */
   .header[data-scrolled="true"] {
-    border-bottom-color: rgb(243 247 251 / 10%);
-    background: rgb(4 17 42 / 55%);
-    box-shadow: 0 0.5rem 1.5rem rgb(4 17 42 / 18%);
+    border-bottom-color: var(--inverse-10);
+    background: var(--header-glass);
+    box-shadow: 0 0.5rem 1.5rem var(--navy-shadow-strong);
     /* 25% of prior blur (0.875rem → ~0.22rem) */
     backdrop-filter: blur(0.22rem) saturate(1.2);
     -webkit-backdrop-filter: blur(0.22rem) saturate(1.2);
+  }
+
+  /*
+   * Inverted (version-2–4): solid ivory bar in normal flow so the
+   * video hero begins below the header, then sticks on scroll.
+   */
+  .header--inverted {
+    position: sticky;
+    border-bottom-color: var(--line-200);
+    background: var(--ivory-50);
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .header--inverted[data-scrolled="true"] {
+    border-bottom-color: var(--line-200);
+    background: var(--ivory-50);
+    box-shadow: 0 0.25rem 0.75rem var(--navy-shadow-soft);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  /*
+   * Over-hero (version-3 / version-5): translucent navy on scroll WITHOUT
+   * backdrop-filter. Blur re-composites the hero navy scrim and makes it look
+   * like the video overlay is changing; flat alpha keeps the scrim stable.
+   */
+  .header--over-hero[data-scrolled="true"] {
+    border-bottom-color: var(--inverse-10);
+    background: rgb(4 17 42 / 72%);
+    box-shadow: 0 0.5rem 1.5rem var(--navy-shadow-strong);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
   }
 
   .header__inner {
@@ -128,8 +227,9 @@ const isCurrent = (href: string) =>
     display: grid;
     align-items: center;
     margin-inline: auto;
-    grid-template-columns: auto 1fr auto;
-    gap: clamp(1.5rem, 3vw, 3rem);
+    grid-template-columns: auto 1fr auto auto;
+    gap: clamp(1.25rem, 2.4vw, 2.25rem);
+    transition: min-height 220ms ease;
   }
 
   .wordmark {
@@ -140,6 +240,16 @@ const isCurrent = (href: string) =>
     width: 9rem;
     height: auto;
     transform: translateX(-0.375rem);
+    transform-origin: left center;
+    transition: transform 220ms ease;
+  }
+
+  .header[data-scrolled="true"] .header__inner {
+    min-height: 4rem;
+  }
+
+  .header[data-scrolled="true"] .wordmark img {
+    transform: translateX(-0.375rem) scale(0.88);
   }
 
   .desktop-nav {
@@ -150,10 +260,22 @@ const isCurrent = (href: string) =>
   }
 
   .desktop-nav a {
+    position: relative;
+    padding-block: 0.375rem;
     color: var(--inverse-82);
-    font-size: 0.78125rem;
-    font-weight: 520;
+    font-size: 0.84375rem;
+    font-weight: 560;
     text-decoration: none;
+  }
+
+  .desktop-nav a[aria-current="page"]::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: -0.125rem;
+    left: 0;
+    height: 2px;
+    background: var(--gold-500);
   }
 
   .desktop-nav a:hover,
@@ -161,12 +283,132 @@ const isCurrent = (href: string) =>
     color: var(--white);
   }
 
+  .header--inverted .desktop-nav a {
+    color: var(--text-on-light-muted);
+  }
+
+  .header--inverted .desktop-nav a:hover,
+  .header--inverted .desktop-nav a[aria-current="page"] {
+    color: var(--navy-950);
+  }
+
   .header__cta :global(.button) {
-    min-height: auto;
-    padding: 0.45rem 0.8rem;
+    min-height: 2.75rem;
+    padding: 0.625rem 1.125rem;
     background: var(--white);
     color: var(--navy-950);
-    font-size: 0.71875rem;
+    font-size: 0.8125rem;
+  }
+
+  .header--inverted .header__cta :global(.button) {
+    background: var(--surface-brand);
+    color: var(--white);
+  }
+
+  .header--inverted .header__cta :global(.button:hover) {
+    background: var(--blue-700);
+  }
+
+  .proto-switch {
+    display: inline-flex;
+    overflow: hidden;
+    border: 1px solid var(--inverse-18);
+    border-radius: var(--radius-sm);
+  }
+
+  .proto-switch a {
+    display: grid;
+    min-width: 2.125rem;
+    min-height: 1.875rem;
+    color: var(--inverse-82);
+    font-size: 0.6875rem;
+    font-weight: 660;
+    place-items: center;
+    text-decoration: none;
+  }
+
+  .proto-switch a + a {
+    border-left: 1px solid var(--inverse-18);
+  }
+
+  .proto-switch a:hover {
+    background: var(--inverse-08);
+  }
+
+  .proto-switch a[aria-current="page"] {
+    background: var(--white);
+    color: var(--navy-950);
+  }
+
+  .header--inverted .proto-switch {
+    border-color: var(--line-200);
+  }
+
+  .header--inverted .proto-switch a {
+    color: var(--text-on-light-muted);
+  }
+
+  .header--inverted .proto-switch a + a {
+    border-left-color: var(--line-200);
+  }
+
+  .header--inverted .proto-switch a:hover {
+    background: var(--navy-overlay-12);
+  }
+
+  .header--inverted .proto-switch a[aria-current="page"] {
+    background: var(--surface-brand);
+    color: var(--white);
+  }
+
+  .mobile-proto {
+    display: grid;
+    align-items: center;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--inverse-18);
+  }
+
+  .header--inverted .mobile-proto {
+    border-top-color: var(--line-200);
+  }
+
+  .mobile-proto span {
+    grid-column: 1 / -1;
+    font-size: 0.625rem;
+    font-weight: 660;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+
+  .mobile-proto a {
+    display: grid;
+    width: 100%;
+    min-width: 0;
+    min-height: 2.5rem;
+    border: 1px solid var(--inverse-18);
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 660;
+    place-items: center;
+    text-decoration: none;
+  }
+
+  .header--inverted .mobile-proto a {
+    border-color: var(--line-200);
+  }
+
+  .mobile-proto a[aria-current="page"] {
+    background: var(--white);
+    color: var(--navy-950);
+  }
+
+  .header--inverted .mobile-proto a[aria-current="page"] {
+    background: var(--surface-brand);
+    color: var(--white);
   }
 
   .mobile-nav {
@@ -193,6 +435,10 @@ const isCurrent = (href: string) =>
     background: var(--white);
   }
 
+  .header--inverted .mobile-nav summary span {
+    background: var(--navy-950);
+  }
+
   .mobile-nav nav {
     position: absolute;
     top: 100%;
@@ -207,6 +453,12 @@ const isCurrent = (href: string) =>
     gap: 0.25rem;
   }
 
+  .header--inverted .mobile-nav nav {
+    border-block-color: var(--line-200);
+    background: var(--ivory-50);
+    color: var(--navy-950);
+  }
+
   .mobile-nav nav > a:not(.button) {
     padding-block: 0.8rem;
     font-weight: 600;
@@ -217,12 +469,13 @@ const isCurrent = (href: string) =>
     margin-top: 1rem;
   }
 
-  @media (max-width: 68rem) {
+  @media (max-width: 80rem) {
     .header__inner {
       grid-template-columns: 1fr auto;
     }
 
     .desktop-nav,
+    .proto-switch,
     .header__cta {
       display: none;
     }
@@ -234,6 +487,11 @@ const isCurrent = (href: string) =>
     .mobile-nav .button {
       background: var(--white);
       color: var(--navy-950);
+    }
+
+    .header--inverted .mobile-nav .button {
+      background: var(--surface-brand);
+      color: var(--white);
     }
   }
 </style>

@@ -1,0 +1,29 @@
+---
+import VersionThree from "@/pages/version-3.astro";
+
+const pathDoorImages = [
+  {
+    src: "/images/two-doors/two-doors-crane2.jpg",
+    alt: "Hotel structure under construction with tower cranes",
+  },
+  {
+    src: "/images/two-doors/two-doors-box.jpg",
+    alt: "Two unbranded product shipping boxes on a neutral background",
+  },
+];
+---
+
+<VersionThree
+  heroImageOverride="/images/two-doors/474da058-2745-4afb-8806-daa0978c9263.png"
+  heroAltOverride="Golden-hour boulevard with a hotel tower on the left and retail storefronts on the right"
+  imageOnly
+  pathDoorImages={pathDoorImages}
+  processCardImage={{
+    src: "/images/two-doors/two-doors-room.jpg",
+    alt: "Renovated select-service hotel room",
+  }}
+  documentaryImage={{
+    src: "/images/two-doors/two-doors-ware.jpg",
+    alt: "Consumer product inventory stored in a warehouse",
+  }}
+/>
